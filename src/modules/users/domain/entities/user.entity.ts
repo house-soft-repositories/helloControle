@@ -8,6 +8,8 @@ interface UserEntityProps {
   email: string;
   name: string;
   password: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export default class UserEntity {
@@ -17,6 +19,8 @@ export default class UserEntity {
       email: props.email,
       name: props.name,
       password: props.password,
+      createdAt: props.createdAt ?? new Date(),
+      updatedAt: props.updatedAt ?? new Date(),
     };
   }
 
@@ -40,12 +44,42 @@ export default class UserEntity {
     return new UserEntity(props);
   }
 
+  static fromData(props: UserEntityProps) {
+    return new UserEntity(props);
+  }
+
+  changePassword(newPasswordHash: string) {
+    this.props.password = newPasswordHash;
+  }
+
+  get id() {
+    if (!this.props.id) {
+      throw new UserDomainException('User Id has no generated');
+    }
+    return this.props.id!;
+  }
+  get email() {
+    return this.props.email!;
+  }
+
+  get password() {
+    return this.props.password;
+  }
+  get createdAt() {
+    return this.props.createdAt!;
+  }
+  get updatedAt() {
+    return this.props.updatedAt!;
+  }
+
   toObject() {
     return {
       id: this.props.id,
       email: this.props.email,
       name: this.props.name,
       password: this.props.password,
+      createdAt: this.props.createdAt,
+      updatedAt: this.props.updatedAt,
     };
   }
 }
