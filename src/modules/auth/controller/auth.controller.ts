@@ -3,8 +3,11 @@ import AuthGuard from '@/core/guard/auth.guard';
 import ILoginUseCase, {
   LoginParam,
 } from '@/modules/auth/domain/usecase/i_login_use_case';
+import IRefreshTokenUseCase, {
+  RefreshTokenParam,
+} from '@/modules/auth/domain/usecase/i_refresh_token_use_case';
 import Credentials from '@/modules/auth/dtos/credentials';
-import { LOGIN_SERVICE } from '@/modules/auth/symbols';
+import { LOGIN_SERVICE, REFRESH_TOKEN_SERVICE } from '@/modules/auth/symbols';
 import ICreateUserUseCase, {
   CreateUserParam,
 } from '@/modules/users/domain/usecase/i_create_user_use_case';
@@ -15,7 +18,9 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   HttpException,
+  HttpStatus,
   Inject,
   Post,
   UseGuards,
@@ -28,6 +33,8 @@ export default class AuthController {
     private readonly createUserService: ICreateUserUseCase,
     @Inject(LOGIN_SERVICE)
     private readonly loginService: ILoginUseCase,
+    @Inject(REFRESH_TOKEN_SERVICE)
+    private readonly refreshTokenService: IRefreshTokenUseCase,
   ) {}
 
   @Post('/register')
@@ -61,5 +68,23 @@ export default class AuthController {
   @UseGuards(AuthGuard)
   async getMe(@User() user: UserDto) {
     return user;
+  }
+
+  @Post('/refresh')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  async refreshToken(@User() user: UserDto) {
+    const param = new RefreshTokenParam(user.id);
+
+    const resultRefreshTokenService =
+      await this.refreshTokenService.execute(param);
+
+    if (resultRefreshTokenService.isLeft()) {
+      throw new HttpException(
+        resultRefreshTokenService.value.message,
+        resultRefreshTokenService.value.statusCode,
+      );
+    }
+    return resultRefreshTokenService.value.fromResponse();
   }
 }

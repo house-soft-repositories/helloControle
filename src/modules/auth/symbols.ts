@@ -1,2 +1,3 @@
 export const LOGIN_SERVICE = Symbol('LOGIN_SERVICE');
 export const EXTRACT_USER_SERVICE = Symbol('EXTRACT_USER_SERVICE');
+export const REFRESH_TOKEN_SERVICE = Symbol('REFRESH_TOKEN_SERVICE');
