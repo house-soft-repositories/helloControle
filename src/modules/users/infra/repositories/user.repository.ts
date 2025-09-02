@@ -23,15 +23,19 @@ export default class UserRepository implements IUserRepository {
     query: UserQueryOptions,
   ): AsyncResult<AppException, UserEntity> {
     try {
-      let options: FindOneOptions<UserModel> = {};
+      let options: FindOneOptions<UserModel> = {
+        select: query.selectFields,
+      };
 
       if (query.userEmail) {
         options = {
+          ...options,
           where: { email: query.userEmail },
         };
       }
       if (query.userId) {
         options = {
+          ...options,
           where: { id: query.userId },
         };
       }
