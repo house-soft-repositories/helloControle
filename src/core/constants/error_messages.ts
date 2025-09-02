@@ -1,3 +1,5 @@
 export default abstract class ErrorMessages {
   static readonly UNEXPECTED_ERROR = 'Unexpected error occurred';
+  static readonly USER_NOT_FOUND = 'User not found';
+  static readonly USER_ALREADY_EXISTS = 'E-mail or password not valid';
 }
