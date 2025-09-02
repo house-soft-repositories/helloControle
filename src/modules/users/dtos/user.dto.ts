@@ -1,4 +1,5 @@
 import {
+  IsDate,
   IsEmail,
   IsNumber,
   IsString,
@@ -21,4 +22,10 @@ export default class UserDto {
   @IsString()
   @Length(6)
   password: string;
+
+  @IsDate()
+  createdAt: Date;
+
+  @IsDate()
+  updatedAt: Date;
 }

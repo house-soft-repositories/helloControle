@@ -1,6 +1,7 @@
 import { validateEnvironmentVariables } from '@/core/config/enviroment.validation';
 import ConfigurationService from '@/core/services/configuration.service';
 import { EncryptionService } from '@/core/services/encryption.service';
+import JsonWebTokenService from '@/core/services/json_web_token.service';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -20,7 +21,7 @@ import { JwtModule } from '@nestjs/jwt';
       }),
     }),
   ],
-  providers: [ConfigurationService, EncryptionService],
-  exports: [ConfigurationService, EncryptionService],
+  providers: [ConfigurationService, EncryptionService, JsonWebTokenService],
+  exports: [ConfigurationService, EncryptionService, JsonWebTokenService],
 })
 export default class CoreModule {}

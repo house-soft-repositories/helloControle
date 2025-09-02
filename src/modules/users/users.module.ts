@@ -39,6 +39,12 @@ import { Repository } from 'typeorm';
         encryption: IEncryptionService,
       ) => new CreateUserService(userRepository, encryption),
     },
+    {
+      inject: [getRepositoryToken(UserModel)],
+      provide: USER_REPOSITORY,
+      useFactory: (userRepository: Repository<UserModel>) =>
+        new UserRepository(userRepository),
+    },
   ],
 })
 export default class UsersModule {}
