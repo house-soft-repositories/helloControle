@@ -1,1 +1,2 @@
 export const LOGIN_SERVICE = Symbol('LOGIN_SERVICE');
+export const EXTRACT_USER_SERVICE = Symbol('EXTRACT_USER_SERVICE');

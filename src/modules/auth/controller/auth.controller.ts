@@ -1,3 +1,5 @@
+import { User } from '@/core/decorators/user_request.decorator';
+import AuthGuard from '@/core/guard/auth.guard';
 import ILoginUseCase, {
   LoginParam,
 } from '@/modules/auth/domain/usecase/i_login_use_case';
@@ -7,8 +9,17 @@ import ICreateUserUseCase, {
   CreateUserParam,
 } from '@/modules/users/domain/usecase/i_create_user_use_case';
 import CreateUserDto from '@/modules/users/dtos/create_user.dto';
+import UserDto from '@/modules/users/dtos/user.dto';
 import { CREATE_USER_SERVICE } from '@/modules/users/symbols';
-import { Body, Controller, HttpException, Inject, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  Inject,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 
 @Controller('api/auth')
 export default class AuthController {
@@ -44,5 +55,11 @@ export default class AuthController {
       });
     }
     return result.value.fromResponse();
+  }
+
+  @Get('/me')
+  @UseGuards(AuthGuard)
+  async getMe(@User() user: UserDto) {
+    return user;
   }
 }

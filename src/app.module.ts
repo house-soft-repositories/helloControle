@@ -24,6 +24,7 @@ import { AppService } from './app.service';
         synchronize: true,
       }),
     }),
+    CoreModule,
     UsersModule,
     AuthModule,
   ],
