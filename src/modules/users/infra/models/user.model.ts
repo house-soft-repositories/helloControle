@@ -1,8 +1,11 @@
 import UserRole from '@/core/types/user_role';
+import CityModel from '@/modules/city/infra/models/city.model';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,6 +26,13 @@ export default class UserModel {
 
   @Column({ type: 'enum', enum: UserRole })
   role: UserRole;
+
+  @ManyToOne(() => CityModel)
+  @JoinColumn({ name: 'current_city_id' })
+  currentCity: CityModel | null;
+
+  @Column({ name: 'current_city_id', nullable: true })
+  currentCityId: number | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

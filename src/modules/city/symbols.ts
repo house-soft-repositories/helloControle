@@ -1,0 +1,2 @@
+export const CREATE_CITY_SERVICE = Symbol('CREATE_CITY_SERVICE');
+export const CITY_REPOSITORY = Symbol('CITY_REPOSITORY');
