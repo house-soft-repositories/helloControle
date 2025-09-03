@@ -1,5 +1,8 @@
+import { Roles } from '@/core/decorators/role.decorator';
 import { User } from '@/core/decorators/user_request.decorator';
 import AuthGuard from '@/core/guard/auth.guard';
+import { RolesGuard } from '@/core/guard/role.guard';
+import UserRole from '@/core/types/user_role';
 import ILoginUseCase, {
   LoginParam,
 } from '@/modules/auth/domain/usecase/i_login_use_case';
@@ -12,6 +15,7 @@ import ICreateUserUseCase, {
   CreateUserParam,
 } from '@/modules/users/domain/usecase/i_create_user_use_case';
 import CreateUserDto from '@/modules/users/dtos/create_user.dto';
+import CreateUserAdminDto from '@/modules/users/dtos/create_user_admin.dto';
 import UserDto from '@/modules/users/dtos/user.dto';
 import { CREATE_USER_SERVICE } from '@/modules/users/symbols';
 import {
@@ -43,6 +47,7 @@ export default class AuthController {
       createUserDto.name,
       createUserDto.email,
       createUserDto.password,
+      createUserDto.role,
     );
     const result = await this.createUserService.execute(param);
     if (result.isLeft()) {
@@ -52,6 +57,26 @@ export default class AuthController {
     }
     return result.value.fromResponse();
   }
+
+  @Post('/register/admin')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async createAdmin(@Body() createUserAdminDto: CreateUserAdminDto) {
+    const param = new CreateUserParam(
+      createUserAdminDto.name,
+      createUserAdminDto.email,
+      createUserAdminDto.password,
+      createUserAdminDto.role,
+    );
+    const result = await this.createUserService.execute(param);
+    if (result.isLeft()) {
+      throw new HttpException(result.value.message, result.value.statusCode, {
+        cause: result.value.cause,
+      });
+    }
+    return result.value.fromResponse();
+  }
+
   @Post('/login')
   async login(@Body() credentials: Credentials) {
     const param = new LoginParam(credentials.email, credentials.password);
