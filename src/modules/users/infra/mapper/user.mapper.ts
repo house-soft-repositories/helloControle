@@ -6,6 +6,7 @@ export default abstract class UserMapper {
     return UserEntity.fromData({
       id: userModel.id,
       password: userModel.password,
+      role: userModel.role,
       email: userModel.email,
       name: userModel.name,
     });
