@@ -1,3 +1,4 @@
+import UserRole from '@/core/types/user_role';
 import EmailValidator from '@/core/validators/email.validator';
 import NameValidator from '@/core/validators/name.validator';
 import PasswordValidator from '@/core/validators/password.validator';
@@ -8,6 +9,7 @@ interface UserEntityProps {
   email: string;
   name: string;
   password: string;
+  role: UserRole;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -19,6 +21,7 @@ export default class UserEntity {
       email: props.email,
       name: props.name,
       password: props.password,
+      role: props.role,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
     };
@@ -36,6 +39,9 @@ export default class UserEntity {
       !PasswordValidator.validate(props.password)
     ) {
       throw new UserDomainException('Invalid password');
+    }
+    if (!props.role) {
+      throw new UserDomainException('Role is required');
     }
   }
 
@@ -77,6 +83,7 @@ export default class UserEntity {
       id: this.props.id,
       email: this.props.email,
       name: this.props.name,
+      role: this.props.role,
       password: this.props.password,
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,
