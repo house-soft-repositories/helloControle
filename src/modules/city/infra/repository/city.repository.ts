@@ -32,4 +32,24 @@ export default class CityRepository implements ICityRepository {
       );
     }
   }
+
+  async findAll(): AsyncResult<AppException, CityEntity[]> {
+    try {
+      const cityModels = await this.cityRepository.find({
+        order: {
+          name: 'ASC',
+        },
+      });
+
+      const cityEntities = cityModels.map(cityModel =>
+        CityMapper.toEntity(cityModel),
+      );
+
+      return right(cityEntities);
+    } catch (error) {
+      return left(
+        new CityRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, error),
+      );
+    }
+  }
 }

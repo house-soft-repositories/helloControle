@@ -6,4 +6,5 @@ import CityModel from '@/modules/city/infra/models/city.model';
 export default interface ICityRepository {
   create(cityEntity: CityEntity): CityModel;
   save(cityEntity: CityEntity): AsyncResult<AppException, CityEntity>;
+  findAll(): AsyncResult<AppException, CityEntity[]>;
 }
