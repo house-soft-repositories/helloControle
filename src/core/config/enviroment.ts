@@ -1,5 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Length,
+} from 'class-validator';
 
 export default class EnvironmentVariables {
   @IsEnum(['dev', 'tst', 'prd'])
@@ -51,7 +58,10 @@ export default class EnvironmentVariables {
   @IsNotEmpty()
   REFRESH_TOKEN_EXPIRES_IN_SECONDS: number;
 
+  @IsEmail()
+  ADMIN_EMAIL: string;
 
-
-  static
+  @IsString()
+  @Length(6)
+  ADMIN_PASSWORD: string;
 }
