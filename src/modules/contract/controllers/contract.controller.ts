@@ -1,10 +1,12 @@
 import CreateContractService from '@/modules/contract/application/create_contract.service';
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
+import FindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
 import ContractDto from '@/modules/contract/dtos/contract.dto';
 import CreateContractDto from '@/modules/contract/dtos/create_contract.dto';
 import {
   CREATE_CONTRACT_SERVICE,
   FIND_ALL_CONTRACTS_SERVICE,
+  FIND_CONTRACT_BY_ID_SERVICE,
 } from '@/modules/contract/symbols';
 import {
   Body,
@@ -13,6 +15,8 @@ import {
   HttpCode,
   HttpException,
   Inject,
+  NotFoundException,
+  Param,
   Post,
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
@@ -24,6 +28,8 @@ export default class ContractController {
     private readonly createContractService: CreateContractService,
     @Inject(FIND_ALL_CONTRACTS_SERVICE)
     private readonly findAllContractsService: FindAllContractsService,
+    @Inject(FIND_CONTRACT_BY_ID_SERVICE)
+    private readonly findContractByIdService: FindContractByIdService,
   ) {}
 
   @HttpCode(201)
@@ -60,5 +66,26 @@ export default class ContractController {
     return result.value.map(contract =>
       plainToClass(ContractDto, contract.toObject()),
     );
+  }
+
+  @HttpCode(200)
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    const result = await this.findContractByIdService.execute(id);
+    if (result.isLeft()) {
+      throw new HttpException(
+        result.value.message,
+        result.value.statusCode || 500,
+        {
+          cause: result.value.cause,
+        },
+      );
+    }
+
+    if (!result.value) {
+      throw new NotFoundException(`Contrato com ID ${id} não encontrado`);
+    }
+
+    return plainToClass(ContractDto, result.value.toObject());
   }
 }
