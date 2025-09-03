@@ -9,7 +9,7 @@ interface ContractEntityProps {
   valorGlosado: number;
   dataAssinatura: Date;
   dataVencimento: Date;
-  secretariaContratante: string;
+  orgaoContratante: string;
   empresaContratada: string;
   cidadeContratante?: string;
   createdAt?: Date;
@@ -27,7 +27,7 @@ export default class ContractEntity {
       valorGlosado: props.valorGlosado,
       dataAssinatura: props.dataAssinatura,
       dataVencimento: props.dataVencimento,
-      secretariaContratante: props.secretariaContratante,
+      orgaoContratante: props.orgaoContratante,
       empresaContratada: props.empresaContratada,
       cidadeContratante: props.cidadeContratante,
       createdAt: props.createdAt ?? new Date(),
@@ -55,8 +55,8 @@ export default class ContractEntity {
     if (!props.dataVencimento) {
       throw new ContractDomainException('Expiration date is required');
     }
-    if (!props.secretariaContratante) {
-      throw new ContractDomainException('Contracting secretary is required');
+    if (!props.orgaoContratante) {
+      throw new ContractDomainException('Contracting orgao is required');
     }
     if (!props.empresaContratada) {
       throw new ContractDomainException('Contracted company is required');
@@ -113,8 +113,8 @@ export default class ContractEntity {
     return this.props.dataVencimento;
   }
 
-  get secretariaContratante() {
-    return this.props.secretariaContratante;
+  get orgaoContratante() {
+    return this.props.orgaoContratante;
   }
 
   get empresaContratada() {
@@ -143,7 +143,7 @@ export default class ContractEntity {
       valorGlosado: this.props.valorGlosado,
       dataAssinatura: this.props.dataAssinatura,
       dataVencimento: this.props.dataVencimento,
-      secretariaContratante: this.props.secretariaContratante,
+      orgaoContratante: this.props.orgaoContratante,
       empresaContratada: this.props.empresaContratada,
       cidadeContratante: this.props.cidadeContratante,
       createdAt: this.props.createdAt,

@@ -1,7 +1,7 @@
 export interface ContractQueryOptions {
   contractId?: string;
   contractUuid?: string;
-  secretariaContratante?: string;
+  orgaoContratante?: string;
   empresaContratada?: string;
   cidadeContratanteId?: number;
   dataAssinaturaInicio?: Date;
@@ -22,7 +22,7 @@ interface ContractModel {
   valorGlosado: number;
   dataAssinatura: Date;
   dataVencimento: Date;
-  secretariaContratante: string;
+  orgaoContratante: string;
   empresaContratada: string;
   cidadeContratante: any;
   cidadeContratanteId: number;

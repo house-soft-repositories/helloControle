@@ -10,7 +10,7 @@ describe('ContractEntity', () => {
     valorGlosado: 5000,
     dataAssinatura: new Date('2024-01-01'),
     dataVencimento: new Date('2024-12-31'),
-    secretariaContratante: 'Secretaria de Saúde',
+    orgaoContratante: 'Secretaria de Saúde',
     empresaContratada: 'Empresa ABC Ltda',
     cidadeContratante: 'São Paulo',
   };
@@ -26,8 +26,8 @@ describe('ContractEntity', () => {
       expect(contract.valorGlosado).toBe(validContractData.valorGlosado);
       expect(contract.dataAssinatura).toBe(validContractData.dataAssinatura);
       expect(contract.dataVencimento).toBe(validContractData.dataVencimento);
-      expect(contract.secretariaContratante).toBe(
-        validContractData.secretariaContratante,
+      expect(contract.orgaoContratante).toBe(
+        validContractData.orgaoContratante,
       );
       expect(contract.empresaContratada).toBe(
         validContractData.empresaContratada,
@@ -73,8 +73,8 @@ describe('ContractEntity', () => {
       );
     });
 
-    it('should throw error when secretariaContratante is missing', () => {
-      const invalidData = { ...validContractData, secretariaContratante: '' };
+    it('should throw error when orgaoContratante is missing', () => {
+      const invalidData = { ...validContractData, orgaoContratante: '' };
 
       expect(() => ContractEntity.create(invalidData)).toThrow(
         ContractDomainException,
@@ -104,7 +104,7 @@ describe('ContractEntity', () => {
           valorGlosado: validContractData.valorGlosado,
           dataAssinatura: validContractData.dataAssinatura,
           dataVencimento: validContractData.dataVencimento,
-          secretariaContratante: validContractData.secretariaContratante,
+          orgaoContratante: validContractData.orgaoContratante,
           empresaContratada: validContractData.empresaContratada,
           cidadeContratante: validContractData.cidadeContratante,
         }),

@@ -11,7 +11,7 @@ export default interface ICreateContractUseCase {
     valorGlosado: number;
     dataAssinatura: Date;
     dataVencimento: Date;
-    secretariaContratante: string;
+    orgaoContratante: string;
     empresaContratada: string;
     cidadeContratante?: string;
   }): AsyncResult<ContractRepositoryException, ContractEntity>;

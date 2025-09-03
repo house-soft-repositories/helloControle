@@ -41,7 +41,7 @@ export default class ContractDto {
 
   @IsString()
   @IsNotEmpty()
-  secretariaContratante: string;
+  orgaoContratante: string;
 
   @IsString()
   @IsNotEmpty()

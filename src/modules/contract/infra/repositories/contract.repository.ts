@@ -47,18 +47,16 @@ export default class ContractRepository implements IContractRepository {
     }
   }
 
-  async findBySecretaria(
-    secretaria: string,
+  async findByOrgao(
+    orgao: string,
   ): AsyncResult<ContractRepositoryException, ContractEntity[]> {
     try {
-      if (!secretaria || secretaria.trim() === '') {
-        return left(
-          new ContractRepositoryException('Secretaria cannot be empty'),
-        );
+      if (!orgao || orgao.trim() === '') {
+        return left(new ContractRepositoryException('Orgão cannot be empty'));
       }
 
       const contracts = await this.contractRepository.find({
-        where: { secretariaContratante: secretaria },
+        where: { orgaoContratante: orgao },
         relations: ['cidadeContratante'],
         order: {
           createdAt: 'DESC',

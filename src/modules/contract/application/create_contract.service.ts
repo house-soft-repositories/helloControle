@@ -18,7 +18,7 @@ export default class CreateContractService implements ICreateContractUseCase {
     valorGlosado: number;
     dataAssinatura: Date;
     dataVencimento: Date;
-    secretariaContratante: string;
+    orgaoContratante: string;
     empresaContratada: string;
     cidadeContratante?: string;
   }): AsyncResult<ContractRepositoryException, ContractEntity> {
@@ -45,7 +45,7 @@ export default class CreateContractService implements ICreateContractUseCase {
         valorGlosado: contractData.valorGlosado,
         dataAssinatura: contractData.dataAssinatura,
         dataVencimento: contractData.dataVencimento,
-        secretariaContratante: contractData.secretariaContratante,
+        orgaoContratante: contractData.orgaoContratante,
         empresaContratada: contractData.empresaContratada,
         cidadeContratante: contractData.cidadeContratante,
       });

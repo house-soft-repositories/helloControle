@@ -12,7 +12,7 @@ export default abstract class ContractMapper {
       valorGlosado: contractModel.valorGlosado,
       dataAssinatura: contractModel.dataAssinatura,
       dataVencimento: contractModel.dataVencimento,
-      secretariaContratante: contractModel.secretariaContratante,
+      orgaoContratante: contractModel.orgaoContratante,
       empresaContratada: contractModel.empresaContratada,
       cidadeContratante: contractModel.cidadeContratante?.name,
       createdAt: contractModel.createdAt,
@@ -31,7 +31,7 @@ export default abstract class ContractMapper {
       valorGlosado: entityObject.valorGlosado,
       dataAssinatura: entityObject.dataAssinatura,
       dataVencimento: entityObject.dataVencimento,
-      secretariaContratante: entityObject.secretariaContratante,
+      orgaoContratante: entityObject.orgaoContratante,
       empresaContratada: entityObject.empresaContratada,
       // Note: cidadeContratante relationship is handled separately
       cidadeContratanteId: null, // This should be set when relating to a city
@@ -52,7 +52,7 @@ export default abstract class ContractMapper {
       valorGlosado: entityObject.valorGlosado,
       dataAssinatura: entityObject.dataAssinatura,
       dataVencimento: entityObject.dataVencimento,
-      secretariaContratante: entityObject.secretariaContratante,
+      orgaoContratante: entityObject.orgaoContratante,
       empresaContratada: entityObject.empresaContratada,
       // Exclude cidadeContratante relationship field for updates
       updatedAt: new Date(),

@@ -36,8 +36,8 @@ export default class ContractModel extends BaseModel {
   @Column({ name: 'data_vencimento', type: 'date' })
   dataVencimento: Date;
 
-  @Column({ name: 'secretaria_contratante', type: 'varchar' })
-  secretariaContratante: string;
+  @Column({ name: 'orgao_contratante', type: 'varchar' })
+  orgaoContratante: string;
 
   @Column({ name: 'empresa_contratada', type: 'varchar' })
   empresaContratada: string;

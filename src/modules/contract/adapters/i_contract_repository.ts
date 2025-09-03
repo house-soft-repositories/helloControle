@@ -13,8 +13,8 @@ export default interface IContractRepository {
   findByUuid(
     uuid: string,
   ): AsyncResult<ContractRepositoryException, ContractEntity | null>;
-  findBySecretaria(
-    secretaria: string,
+  findByOrgao(
+    orgao: string,
   ): AsyncResult<ContractRepositoryException, ContractEntity[]>;
   findByEmpresa(
     empresa: string,
