@@ -3,7 +3,7 @@ import CityEntity from '@/modules/city/domain/entities/city.entity';
 import CityModel from '@/modules/city/infra/models/city.model';
 
 export default abstract class CityMapper extends BaseMapper<
-  CityModel,
+  CityEntity,
   CityModel
 > {
   static toEntity(model: CityModel): CityEntity {
@@ -11,6 +11,7 @@ export default abstract class CityMapper extends BaseMapper<
       id: model.id,
       name: model.name,
       state: model.state,
+      isActive: model.isActive,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     });
@@ -21,6 +22,7 @@ export default abstract class CityMapper extends BaseMapper<
       id: entity.id,
       name: entity.name,
       state: entity.state,
+      isActive: entity.isActive,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };

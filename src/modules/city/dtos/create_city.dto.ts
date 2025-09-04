@@ -4,4 +4,5 @@ import { PickType } from '@nestjs/swagger';
 export default class CreateCityDto extends PickType(CityDto, [
   'name',
   'state',
+  'isActive',
 ]) {}

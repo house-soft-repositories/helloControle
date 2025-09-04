@@ -23,4 +23,7 @@ export default class CityModel extends BaseModelIdNumericGenerated {
     },
   })
   state: string;
+
+  @Column({ type: 'boolean', default: false })
+  isActive: boolean;
 }
