@@ -7,14 +7,41 @@ import CityEntity from '@/modules/city/domain/entities/city.entity';
 import CityRepositoryException from '@/modules/city/exceptions/city_repository.exception';
 import CityMapper from '@/modules/city/infra/mapper/city.mapper';
 import CityModel from '@/modules/city/infra/models/city.model';
+import { CityQueryOptions } from '@/modules/city/infra/query/query_objects';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, FindOneOptions, Repository } from 'typeorm';
 
 export default class CityRepository implements ICityRepository {
   constructor(
     @InjectRepository(CityModel)
     private readonly cityRepository: Repository<CityModel>,
   ) {}
+  async findOne(
+    query: CityQueryOptions,
+  ): AsyncResult<AppException, CityEntity> {
+    try {
+      const findOptions: FindOneOptions<CityModel> = {
+        where: {
+          id: query.cityId,
+        },
+        relations: query.relations,
+        select: query.selectFields,
+      };
+
+      return right(
+        CityMapper.toEntity(
+          await this.cityRepository.findOneOrFail(findOptions),
+        ),
+      );
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        return left(CityRepositoryException.cityNotFound(query.cityId));
+      }
+      return left(
+        new CityRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, error),
+      );
+    }
+  }
   create(cityEntity: CityEntity): CityModel {
     const cityData = CityMapper.toModel(cityEntity);
     return this.cityRepository.create(cityData);
