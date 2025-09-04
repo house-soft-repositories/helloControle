@@ -7,6 +7,7 @@ export default abstract class UserMapper {
       id: userModel.id,
       password: userModel.password,
       role: userModel.role,
+      currentCityId: userModel.currentCityId,
       email: userModel.email,
       name: userModel.name,
     });

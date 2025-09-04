@@ -3,17 +3,33 @@ import {
   EncryptionService,
   IEncryptionService,
 } from '@/core/services/encryption.service';
+import AuthModule from '@/modules/auth/auth.module';
+import ICityRepository from '@/modules/city/adapters/i_city_repository';
+import CityModule from '@/modules/city/city.module';
+import { CITY_REPOSITORY } from '@/modules/city/symbols';
 import IUserRepository from '@/modules/users/adapters/i_user.repository';
+import ChangeUserCurrentCityService from '@/modules/users/application/change_user_current_city.service';
 import CreateUserService from '@/modules/users/application/create_user.service';
+import UserController from '@/modules/users/controller/user.controller';
 import UserModel from '@/modules/users/infra/models/user.model';
 import UserRepository from '@/modules/users/infra/repositories/user.repository';
-import { CREATE_USER_SERVICE, USER_REPOSITORY } from '@/modules/users/symbols';
-import { Module } from '@nestjs/common';
+import {
+  CHANGE_USER_CURRENT_CITY_SERVICE,
+  CREATE_USER_SERVICE,
+  USER_REPOSITORY,
+} from '@/modules/users/symbols';
+import { forwardRef, Module } from '@nestjs/common';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Module({
-  imports: [CoreModule, TypeOrmModule.forFeature([UserModel])],
+  imports: [
+    TypeOrmModule.forFeature([UserModel]),
+    CoreModule,
+    CityModule,
+    forwardRef(() => AuthModule),
+  ],
+  controllers: [UserController],
   providers: [
     {
       inject: [getRepositoryToken(UserModel)],
@@ -28,6 +44,14 @@ import { Repository } from 'typeorm';
         userRepository: IUserRepository,
         encryption: IEncryptionService,
       ) => new CreateUserService(userRepository, encryption),
+    },
+    {
+      inject: [USER_REPOSITORY, CITY_REPOSITORY],
+      provide: CHANGE_USER_CURRENT_CITY_SERVICE,
+      useFactory: (
+        userRepository: IUserRepository,
+        cityRepository: ICityRepository,
+      ) => new ChangeUserCurrentCityService(userRepository, cityRepository),
     },
   ],
   exports: [

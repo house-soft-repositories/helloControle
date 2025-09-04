@@ -7,6 +7,7 @@ import {
   IsString,
   Length,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 export default class UserDto {
@@ -24,6 +25,10 @@ export default class UserDto {
   @IsString()
   @Length(6)
   password: string;
+
+  @IsNumber()
+  @ValidateIf(o => o.currentCityId !== null)
+  currentCityId: number | null;
 
   @IsEnum(UserRole)
   role: UserRole;
