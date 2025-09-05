@@ -60,4 +60,62 @@ export default class CityOrganRepository implements ICityOrganRepository {
       );
     }
   }
+
+  async findById(id: number): AsyncResult<AppException, CityOrganEntity> {
+    try {
+      const cityOrgan = await this.cityOrganRepository.findOne({
+        where: { id },
+      });
+      if (!cityOrgan) {
+        return left(new CityRepositoryException('City organ not found', 404));
+      }
+      return right(CityOrganMapper.toEntity(cityOrgan));
+    } catch (error) {
+      return left(
+        new CityRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, error),
+      );
+    }
+  }
+
+  async update(
+    id: number,
+    cityOrganEntity: CityOrganEntity,
+  ): AsyncResult<AppException, CityOrganEntity> {
+    try {
+      const existingOrgan = await this.cityOrganRepository.findOne({
+        where: { id },
+      });
+      if (!existingOrgan) {
+        return left(new CityRepositoryException('City organ not found', 404));
+      }
+
+      // Mapear apenas os campos que não são undefined
+      const updatedData = CityOrganMapper.toModel(cityOrganEntity);
+      console.log('CityOrganRepository - Mapped data:', updatedData);
+
+      // Remover propriedades undefined para evitar problemas no update
+      const filteredData = Object.fromEntries(
+        Object.entries(updatedData).filter(([_, value]) => value !== undefined),
+      );
+      console.log(
+        'CityOrganRepository - Filtered data for update:',
+        filteredData,
+      );
+
+      // Usar merge e save em vez de update para garantir que as mudanças sejam aplicadas
+      const mergedEntity = this.cityOrganRepository.merge(
+        existingOrgan,
+        filteredData,
+      );
+      const savedEntity = await this.cityOrganRepository.save(mergedEntity);
+      console.log('CityOrganRepository - Saved entity:', savedEntity);
+
+      return right(CityOrganMapper.toEntity(savedEntity));
+    } catch (error) {
+      console.error('CityOrganRepository - Update error:', error);
+      return left(
+        new CityRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, error),
+      );
+    }
+  }
 }

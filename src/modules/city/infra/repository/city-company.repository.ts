@@ -60,4 +60,62 @@ export default class CityCompanyRepository implements ICityCompanyRepository {
       );
     }
   }
+
+  async findById(id: number): AsyncResult<AppException, CityCompanyEntity> {
+    try {
+      const cityCompany = await this.cityCompanyRepository.findOne({
+        where: { id },
+      });
+      if (!cityCompany) {
+        return left(new CityRepositoryException('City company not found', 404));
+      }
+      return right(CityCompanyMapper.toEntity(cityCompany));
+    } catch (error) {
+      return left(
+        new CityRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, error),
+      );
+    }
+  }
+
+  async update(
+    id: number,
+    cityCompanyEntity: CityCompanyEntity,
+  ): AsyncResult<AppException, CityCompanyEntity> {
+    try {
+      const existingCompany = await this.cityCompanyRepository.findOne({
+        where: { id },
+      });
+      if (!existingCompany) {
+        return left(new CityRepositoryException('City company not found', 404));
+      }
+
+      // Mapear apenas os campos que não são undefined
+      const updatedData = CityCompanyMapper.toModel(cityCompanyEntity);
+      console.log('CityCompanyRepository - Mapped data:', updatedData);
+
+      // Remover propriedades undefined para evitar problemas no update
+      const filteredData = Object.fromEntries(
+        Object.entries(updatedData).filter(([_, value]) => value !== undefined),
+      );
+      console.log(
+        'CityCompanyRepository - Filtered data for update:',
+        filteredData,
+      );
+
+      // Usar merge e save em vez de update para garantir que as mudanças sejam aplicadas
+      const mergedEntity = this.cityCompanyRepository.merge(
+        existingCompany,
+        filteredData,
+      );
+      const savedEntity = await this.cityCompanyRepository.save(mergedEntity);
+      console.log('CityCompanyRepository - Saved entity:', savedEntity);
+
+      return right(CityCompanyMapper.toEntity(savedEntity));
+    } catch (error) {
+      console.error('CityCompanyRepository - Update error:', error);
+      return left(
+        new CityRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, error),
+      );
+    }
+  }
 }

@@ -10,4 +10,9 @@ export default interface ICityOrganRepository {
   ): AsyncResult<AppException, CityOrganEntity>;
   findByCityId(cityId: number): AsyncResult<AppException, CityOrganEntity[]>;
   findAll(): AsyncResult<AppException, CityOrganEntity[]>;
+  findById(id: number): AsyncResult<AppException, CityOrganEntity>;
+  update(
+    id: number,
+    cityOrganEntity: CityOrganEntity,
+  ): AsyncResult<AppException, CityOrganEntity>;
 }
