@@ -5,7 +5,13 @@ interface CityEntityProps {
   isActive?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  companies?: CityCompanyEntity[];
+  organs?: CityOrganEntity[];
 }
+
+import CityCompanyEntity from './city-company.entity';
+import CityOrganEntity from './city-organ.entity';
+
 export default class CityEntity {
   constructor(private props: CityEntityProps) {
     this.props = {
@@ -41,6 +47,14 @@ export default class CityEntity {
     return this.props.updatedAt!;
   }
 
+  get companies() {
+    return this.props.companies || [];
+  }
+
+  get organs() {
+    return this.props.organs || [];
+  }
+
   toObject() {
     return {
       id: this.id,
@@ -49,6 +63,8 @@ export default class CityEntity {
       isActive: this.isActive,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      companies: this.companies.map(c => c.toObject()),
+      organs: this.organs.map(o => o.toObject()),
     };
   }
 }
