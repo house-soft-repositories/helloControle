@@ -63,6 +63,7 @@ export default class CityRepository implements ICityRepository {
   async findAll(): AsyncResult<AppException, CityEntity[]> {
     try {
       const cityModels = await this.cityRepository.find({
+        relations: ['companies', 'organs'],
         order: {
           name: 'ASC',
         },
