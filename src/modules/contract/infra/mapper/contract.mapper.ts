@@ -1,5 +1,7 @@
 import ContractEntity from '@/modules/contract/domain/entities/contract.entity';
+import ItemMapper from '@/modules/contract/infra/mapper/item.mapper';
 import ContractModel from '@/modules/contract/infra/models/contract.model';
+import ItemModel from '@/modules/contract/infra/models/item.model';
 
 export default abstract class ContractMapper {
   static toEntity(contractModel: ContractModel): ContractEntity {
@@ -15,28 +17,33 @@ export default abstract class ContractMapper {
       orgaoContratante: contractModel.orgaoContratante,
       empresaContratada: contractModel.empresaContratada,
       cidadeContratante: contractModel.cidadeContratante?.name,
+      items: contractModel.items.map(itemModel =>
+        ItemMapper.toEntity(itemModel),
+      ),
       createdAt: contractModel.createdAt,
       updatedAt: contractModel.updatedAt,
     });
   }
 
   static toModel(contractEntity: ContractEntity): Partial<ContractModel> {
-    const entityObject = contractEntity.toObject();
     return {
-      uuid: entityObject.uuid,
-      id: entityObject.id,
-      nome: entityObject.nome || null,
-      descricao: entityObject.descricao || null,
-      valorTotal: entityObject.valorTotal,
-      valorGlosado: entityObject.valorGlosado,
-      dataAssinatura: entityObject.dataAssinatura,
-      dataVencimento: entityObject.dataVencimento,
-      orgaoContratante: entityObject.orgaoContratante,
-      empresaContratada: entityObject.empresaContratada,
+      uuid: contractEntity.uuid,
+      id: contractEntity.id,
+      nome: contractEntity.nome || null,
+      descricao: contractEntity.descricao || null,
+      valorTotal: contractEntity.valorTotal,
+      valorGlosado: contractEntity.valorGlosado,
+      dataAssinatura: contractEntity.dataAssinatura,
+      dataVencimento: contractEntity.dataVencimento,
+      orgaoContratante: contractEntity.orgaoContratante,
+      empresaContratada: contractEntity.empresaContratada,
       // Note: cidadeContratante relationship is handled separately
       cidadeContratanteId: null, // This should be set when relating to a city
-      createdAt: entityObject.createdAt,
-      updatedAt: entityObject.updatedAt,
+      items: (contractEntity.items ?? []).map(item => {
+        return ItemMapper.toModel(item) as ItemModel;
+      }),
+      createdAt: contractEntity.createdAt,
+      updatedAt: contractEntity.updatedAt,
     };
   }
 
