@@ -1,3 +1,4 @@
+import ICityRepository from '@/modules/city/adapters/i_city_repository';
 import CreateCityService from '@/modules/city/application/create_city.service';
 import CreateCityCompanyService from '@/modules/city/application/create_city_company.service';
 import CreateCityOrganService from '@/modules/city/application/create_city_organ.service';
@@ -49,7 +50,7 @@ import { Repository } from 'typeorm';
     {
       inject: [CITY_REPOSITORY],
       provide: CREATE_CITY_SERVICE,
-      useFactory: (cityRepository: CityRepository) =>
+      useFactory: (cityRepository: ICityRepository) =>
         new CreateCityService(cityRepository),
     },
     {
@@ -67,8 +68,16 @@ import { Repository } from 'typeorm';
     {
       inject: [CITY_REPOSITORY],
       provide: FIND_ALL_CITIES_SERVICE,
-      useFactory: (cityRepository: CityRepository) =>
+      useFactory: (cityRepository: ICityRepository) =>
         new FindAllCitiesService(cityRepository),
+    },
+  ],
+  exports: [
+    {
+      inject: [getRepositoryToken(CityModel)],
+      provide: CITY_REPOSITORY,
+      useFactory: (cityRepository: Repository<CityModel>) =>
+        new CityRepository(cityRepository),
     },
   ],
 })

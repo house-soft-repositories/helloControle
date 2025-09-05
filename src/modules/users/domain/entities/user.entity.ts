@@ -9,6 +9,7 @@ interface UserEntityProps {
   email: string;
   name: string;
   password: string;
+  currentCityId?: number | null;
   role: UserRole;
   createdAt?: Date;
   updatedAt?: Date;
@@ -21,6 +22,7 @@ export default class UserEntity {
       email: props.email,
       name: props.name,
       password: props.password,
+      currentCityId: props.currentCityId ?? null,
       role: props.role,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
@@ -77,6 +79,23 @@ export default class UserEntity {
   get updatedAt() {
     return this.props.updatedAt!;
   }
+  get currentCityId() {
+    return this.props.currentCityId!;
+  }
+
+  changeCurrentCity(cityId: number | null) {
+    if (this.props.role === UserRole.ADMIN) {
+      throw new UserDomainException('Admin user cannot change city');
+    }
+    if (this.props.currentCityId === cityId) {
+      throw new UserDomainException('City is the same as current');
+    }
+    this.props.currentCityId = cityId;
+  }
+
+  toTouch() {
+    this.props.updatedAt = new Date();
+  }
 
   toObject() {
     return {
@@ -84,6 +103,7 @@ export default class UserEntity {
       email: this.props.email,
       name: this.props.name,
       role: this.props.role,
+      currentCityId: this.props.currentCityId,
       password: this.props.password,
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,
