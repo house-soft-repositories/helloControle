@@ -1,10 +1,12 @@
+import ItemEntity from '@/modules/contract/domain/entities/item.entity';
 import ContractDomainException from '@/modules/contract/exceptions/contract_domain_exception';
+import { randomUUID } from 'crypto';
 
 interface ContractEntityProps {
   uuid?: string;
   id: string;
-  nome?: string;
-  descricao?: string;
+  nome?: string | null;
+  descricao?: string | null;
   valorTotal: number;
   valorGlosado: number;
   dataAssinatura: Date;
@@ -12,6 +14,7 @@ interface ContractEntityProps {
   orgaoContratante: string;
   empresaContratada: string;
   cidadeContratante?: string;
+  items?: ItemEntity[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -19,10 +22,10 @@ interface ContractEntityProps {
 export default class ContractEntity {
   private constructor(private readonly props: ContractEntityProps) {
     this.props = {
-      uuid: props.uuid,
+      uuid: props.uuid ?? randomUUID().toString(),
       id: props.id,
-      nome: props.nome,
-      descricao: props.descricao,
+      nome: props.nome || null,
+      descricao: props.descricao || null,
       valorTotal: props.valorTotal,
       valorGlosado: props.valorGlosado,
       dataAssinatura: props.dataAssinatura,
@@ -30,6 +33,7 @@ export default class ContractEntity {
       orgaoContratante: props.orgaoContratante,
       empresaContratada: props.empresaContratada,
       cidadeContratante: props.cidadeContratante,
+      items: props.items ?? [],
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
     };
@@ -82,7 +86,7 @@ export default class ContractEntity {
   }
 
   get uuid() {
-    return this.props.uuid;
+    return this.props.uuid!;
   }
 
   get id() {
@@ -124,6 +128,9 @@ export default class ContractEntity {
   get cidadeContratante() {
     return this.props.cidadeContratante;
   }
+  get items() {
+    return this.props.items!;
+  }
 
   get createdAt() {
     return this.props.createdAt!;
@@ -146,8 +153,18 @@ export default class ContractEntity {
       orgaoContratante: this.props.orgaoContratante,
       empresaContratada: this.props.empresaContratada,
       cidadeContratante: this.props.cidadeContratante,
+      items: this.props.items?.map(item => item.toObject()),
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,
     };
+  }
+
+  addItem(item: ItemEntity) {
+    this.props.items!.push(item);
+    this.toTouch();
+  }
+
+  private toTouch() {
+    this.props.updatedAt = new Date();
   }
 }
