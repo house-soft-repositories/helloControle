@@ -91,15 +91,10 @@ export default class CityCompanyRepository implements ICityCompanyRepository {
 
       // Mapear apenas os campos que não são undefined
       const updatedData = CityCompanyMapper.toModel(cityCompanyEntity);
-      console.log('CityCompanyRepository - Mapped data:', updatedData);
 
       // Remover propriedades undefined para evitar problemas no update
       const filteredData = Object.fromEntries(
         Object.entries(updatedData).filter(([_, value]) => value !== undefined),
-      );
-      console.log(
-        'CityCompanyRepository - Filtered data for update:',
-        filteredData,
       );
 
       // Usar merge e save em vez de update para garantir que as mudanças sejam aplicadas
@@ -108,7 +103,6 @@ export default class CityCompanyRepository implements ICityCompanyRepository {
         filteredData,
       );
       const savedEntity = await this.cityCompanyRepository.save(mergedEntity);
-      console.log('CityCompanyRepository - Saved entity:', savedEntity);
 
       return right(CityCompanyMapper.toEntity(savedEntity));
     } catch (error) {

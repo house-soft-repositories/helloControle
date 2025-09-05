@@ -91,15 +91,10 @@ export default class CityOrganRepository implements ICityOrganRepository {
 
       // Mapear apenas os campos que não são undefined
       const updatedData = CityOrganMapper.toModel(cityOrganEntity);
-      console.log('CityOrganRepository - Mapped data:', updatedData);
 
       // Remover propriedades undefined para evitar problemas no update
       const filteredData = Object.fromEntries(
         Object.entries(updatedData).filter(([_, value]) => value !== undefined),
-      );
-      console.log(
-        'CityOrganRepository - Filtered data for update:',
-        filteredData,
       );
 
       // Usar merge e save em vez de update para garantir que as mudanças sejam aplicadas
@@ -108,7 +103,6 @@ export default class CityOrganRepository implements ICityOrganRepository {
         filteredData,
       );
       const savedEntity = await this.cityOrganRepository.save(mergedEntity);
-      console.log('CityOrganRepository - Saved entity:', savedEntity);
 
       return right(CityOrganMapper.toEntity(savedEntity));
     } catch (error) {

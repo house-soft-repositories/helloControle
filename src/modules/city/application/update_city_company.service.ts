@@ -16,8 +16,6 @@ export default class UpdateCityCompanyService
   async execute(
     param: UpdateCityCompanyParam,
   ): AsyncResult<AppException, UpdateCityCompanyResponse> {
-    console.log('UpdateCityCompanyService - Received param:', param);
-
     // Primeiro, buscar a company existente
     const existingCompanyResult = await this.cityCompanyRepository.findById(
       param.id,
@@ -28,10 +26,6 @@ export default class UpdateCityCompanyService
     }
 
     const existingCompany = existingCompanyResult.value;
-    console.log(
-      'UpdateCityCompanyService - Existing company:',
-      existingCompany.toObject(),
-    );
 
     // Criar uma nova entidade com os dados atualizados
     const updatedCompany = new CityCompanyEntity({
@@ -48,11 +42,6 @@ export default class UpdateCityCompanyService
       updatedAt: new Date(),
     });
 
-    console.log(
-      'UpdateCityCompanyService - Updated company data:',
-      updatedCompany.toObject(),
-    );
-
     const updateResult = await this.cityCompanyRepository.update(
       param.id,
       updatedCompany,
@@ -62,10 +51,6 @@ export default class UpdateCityCompanyService
       return left(updateResult.value);
     }
 
-    console.log(
-      'UpdateCityCompanyService - Final result:',
-      updateResult.value.toObject(),
-    );
     return right(new UpdateCityCompanyResponse(updateResult.value));
   }
 }
