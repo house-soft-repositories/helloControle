@@ -1,18 +1,38 @@
-import AsyncResult from '@/core/types/async_result';
+import UseCase from '@/core/interface/use_case';
 import ContractEntity from '@/modules/contract/domain/entities/contract.entity';
-import ContractRepositoryException from '@/modules/contract/exceptions/contract_repository_exception';
+import ItemTypeEnum from '@/modules/contract/domain/entities/item_type.enum';
 
-export default interface ICreateContractUseCase {
-  execute(contractData: {
-    id: string;
-    nome?: string;
-    descricao?: string;
-    valorTotal: number;
-    valorGlosado: number;
-    dataAssinatura: Date;
-    dataVencimento: Date;
-    orgaoContratante: string;
-    empresaContratada: string;
-    cidadeContratante?: string;
-  }): AsyncResult<ContractRepositoryException, ContractEntity>;
+export default interface ICreateContractUseCase
+  extends UseCase<CreateContractParam, CreateContractResponse> {}
+
+export class CreateContractParam {
+  constructor(
+    public readonly id: string,
+    public readonly valorTotal: number,
+    public readonly valorGlosado: number,
+    public readonly dataAssinatura: Date,
+    public readonly dataVencimento: Date,
+    public readonly orgaoContratante: string,
+    public readonly empresaContratada: string,
+    public readonly items: {
+      name: string;
+      description?: string | null;
+      unitPrice: number;
+      totalPrice?: number;
+      amountUsed: number;
+      quantityUsed?: number | null;
+      quantityTotal?: number | null;
+      type: ItemTypeEnum;
+    }[],
+    public readonly nome?: string,
+    public readonly descricao?: string,
+    public readonly cidadeContratante?: string,
+  ) {}
+}
+export class CreateContractResponse {
+  constructor(public readonly contractEntity: ContractEntity) {}
+
+  fromResponse() {
+    return this.contractEntity.toObject();
+  }
 }
