@@ -9,6 +9,8 @@ export default class FindContractByIdService {
   async execute(
     id: string,
   ): AsyncResult<ContractRepositoryException, ContractEntity | null> {
-    return this.contractRepository.findById(id);
+    return this.contractRepository.findOne({
+      contractId: id,
+    });
   }
 }

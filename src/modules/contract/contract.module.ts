@@ -5,6 +5,7 @@ import FindAllContractsService from '@/modules/contract/application/find_all_con
 import FindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
 import ContractController from '@/modules/contract/controllers/contract.controller';
 import ContractModel from '@/modules/contract/infra/models/contract.model';
+import ItemModel from '@/modules/contract/infra/models/item.model';
 import ContractRepository from '@/modules/contract/infra/repositories/contract.repository';
 import {
   CONTRACT_REPOSITORY,
@@ -17,7 +18,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Module({
-  imports: [CoreModule, TypeOrmModule.forFeature([ContractModel])],
+  imports: [CoreModule, TypeOrmModule.forFeature([ContractModel, ItemModel])],
   controllers: [ContractController],
   providers: [
     {

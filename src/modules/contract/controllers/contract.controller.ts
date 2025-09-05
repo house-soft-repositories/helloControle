@@ -1,6 +1,7 @@
 import CreateContractService from '@/modules/contract/application/create_contract.service';
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
 import FindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
+import { CreateContractParam } from '@/modules/contract/domain/usecase/i_create_contract_use_case';
 import ContractDto from '@/modules/contract/dtos/contract.dto';
 import CreateContractDto from '@/modules/contract/dtos/create_contract.dto';
 import {
@@ -35,7 +36,23 @@ export default class ContractController {
   @HttpCode(201)
   @Post('')
   async create(@Body() contractData: CreateContractDto) {
-    const result = await this.createContractService.execute(contractData);
+    const param = new CreateContractParam(
+      contractData.id,
+      contractData.valorTotal,
+      contractData.valorGlosado,
+      contractData.dataAssinatura,
+      contractData.dataVencimento,
+      contractData.orgaoContratante,
+      contractData.empresaContratada,
+      contractData.items.map(item => ({
+        ...item,
+      })),
+      contractData.nome,
+      contractData.descricao,
+      contractData.cidadeContratante,
+    );
+    const result = await this.createContractService.execute(param);
+
     if (result.isLeft()) {
       throw new HttpException(
         result.value.message,
@@ -45,9 +62,7 @@ export default class ContractController {
         },
       );
     }
-    return plainToClass(ContractDto, {
-      ...result.value.toObject(),
-    });
+    return result.value.fromResponse();
   }
 
   @HttpCode(200)

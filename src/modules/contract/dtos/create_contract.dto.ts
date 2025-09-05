@@ -1,49 +1,20 @@
-import {
-  IsDateString,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import ContractDto from '@/modules/contract/dtos/contract.dto';
+import CreateItemDto from '@/modules/contract/dtos/create_item.dto';
+import { PickType } from '@nestjs/swagger';
+import { IsArray } from 'class-validator';
 
-export default class CreateContractDto {
-  @IsString()
-  @IsNotEmpty()
-  id: string;
-
-  @IsString()
-  @IsOptional()
-  nome?: string;
-
-  @IsString()
-  @IsOptional()
-  descricao?: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  valorTotal: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  valorGlosado: number;
-
-  @IsDateString()
-  @IsNotEmpty()
-  dataAssinatura: Date;
-
-  @IsDateString()
-  @IsNotEmpty()
-  dataVencimento: Date;
-
-  @IsString()
-  @IsNotEmpty()
-  orgaoContratante: string;
-
-  @IsString()
-  @IsNotEmpty()
-  empresaContratada: string;
-
-  @IsString()
-  @IsOptional()
-  cidadeContratante?: string;
+export default class CreateContractDto extends PickType(ContractDto, [
+  'id',
+  'nome',
+  'descricao',
+  'valorTotal',
+  'valorGlosado',
+  'dataAssinatura',
+  'dataVencimento',
+  'orgaoContratante',
+  'empresaContratada',
+  'cidadeContratante',
+]) {
+  @IsArray()
+  declare items: CreateItemDto[];
 }

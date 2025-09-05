@@ -2,7 +2,7 @@ export abstract class BaseMapper<E, M> {
   /**
    * Converte de Model (DTO, ViewModel etc.) para Entity (persistência).
    */
-  abstract toEntity(model: Partial<M>): E;
+  abstract toEntity(model: M): E;
 
   /**
    * Converte de Entity (banco) para Model (DTO, ViewModel etc.).
