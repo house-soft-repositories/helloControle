@@ -5,7 +5,9 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  IsUrl,
   Length,
+  ValidateIf,
 } from 'class-validator';
 
 export default class EnvironmentVariables {
@@ -64,4 +66,9 @@ export default class EnvironmentVariables {
   @IsString()
   @Length(6)
   ADMIN_PASSWORD: string;
+
+  @IsString()
+  @ValidateIf(o => o.NODE_ENV === 'prd')
+  @IsUrl()
+  STORAGE_URL: string;
 }

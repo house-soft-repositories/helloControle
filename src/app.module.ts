@@ -5,7 +5,10 @@ import CityModule from '@/modules/city/city.module';
 import ContractModule from '@/modules/contract/contract.module';
 import UsersModule from '@/modules/users/users.module';
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as fs from 'fs';
+import * as path from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -31,6 +34,35 @@ import { AppService } from './app.service';
     AuthModule,
     CityModule,
     ContractModule,
+    ServeStaticModule.forRootAsync({
+      imports: [CoreModule],
+      inject: [ConfigurationService],
+      useFactory: (configService: ConfigurationService) => {
+        const nodeEnv = configService.get('NODE_ENV');
+
+        if (nodeEnv === 'dev') {
+          // Usar caminho absoluto baseado no process.cwd() que é mais confiável no Docker
+          const filesPath = path.resolve(process.cwd(), 'files');
+
+          // Criar o diretório se ele não existir
+          if (!fs.existsSync(filesPath)) {
+            fs.mkdirSync(filesPath, { recursive: true });
+            console.log(`📁 Diretório criado: ${filesPath}`);
+          } else {
+            console.log(`📁 Diretório já existe: ${filesPath}`);
+          }
+
+          return [
+            {
+              rootPath: filesPath,
+              serveRoot: '/files/',
+            },
+          ];
+        }
+
+        return [];
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
