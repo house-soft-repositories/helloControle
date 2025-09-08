@@ -20,6 +20,7 @@ export default abstract class ContractMapper {
       items: contractModel.items.map(itemModel =>
         ItemMapper.toEntity(itemModel),
       ),
+      fileUrl: contractModel.fileUrl || null,
       createdAt: contractModel.createdAt,
       updatedAt: contractModel.updatedAt,
     });
@@ -37,6 +38,7 @@ export default abstract class ContractMapper {
       dataVencimento: contractEntity.dataVencimento,
       orgaoContratante: contractEntity.orgaoContratante,
       empresaContratada: contractEntity.empresaContratada,
+      fileUrl: contractEntity.fileUrl,
       // Note: cidadeContratante relationship is handled separately
       cidadeContratanteId: null, // This should be set when relating to a city
       items: (contractEntity.items ?? []).map(item => {

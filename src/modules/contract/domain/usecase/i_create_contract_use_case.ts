@@ -24,6 +24,13 @@ export class CreateContractParam {
       quantityTotal?: number | null;
       type: ItemTypeEnum;
     }[],
+    public readonly contractFile: {
+      originalName: string;
+      buffer: Buffer;
+      mimetype: string;
+      size: number;
+      encoding?: string;
+    },
     public readonly nome?: string,
     public readonly descricao?: string,
     public readonly cidadeContratante?: string,

@@ -14,6 +14,7 @@ interface ContractEntityProps {
   orgaoContratante: string;
   empresaContratada: string;
   cidadeContratante?: string;
+  fileUrl?: string | null;
   items?: ItemEntity[];
   createdAt?: Date;
   updatedAt?: Date;
@@ -24,6 +25,7 @@ export default class ContractEntity {
     this.props = {
       uuid: props.uuid ?? randomUUID().toString(),
       id: props.id,
+      fileUrl: props.fileUrl || null,
       nome: props.nome || null,
       descricao: props.descricao || null,
       valorTotal: props.valorTotal,
@@ -140,6 +142,15 @@ export default class ContractEntity {
     return this.props.updatedAt!;
   }
 
+  get fileUrl() {
+    return this.props.fileUrl || null;
+  }
+
+  setContractFileUrl(fileUrl: string) {
+    this.props.fileUrl = fileUrl;
+    this.toTouch();
+  }
+
   toObject() {
     return {
       uuid: this.props.uuid,
@@ -153,6 +164,7 @@ export default class ContractEntity {
       orgaoContratante: this.props.orgaoContratante,
       empresaContratada: this.props.empresaContratada,
       cidadeContratante: this.props.cidadeContratante,
+      fileUrl: this.fileUrl,
       items: this.props.items?.map(item => item.toObject()),
       createdAt: this.props.createdAt,
       updatedAt: this.props.updatedAt,
