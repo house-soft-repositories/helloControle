@@ -7,14 +7,43 @@ import CityCompanyEntity from '@/modules/city/domain/entities/city-company.entit
 import CityRepositoryException from '@/modules/city/exceptions/city_repository.exception';
 import CityCompanyMapper from '@/modules/city/infra/mapper/city-company.mapper';
 import CityCompanyModel from '@/modules/city/infra/models/city-company.model';
+import { CityCompanyQueryOptions } from '@/modules/city/infra/query/query_objects';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, FindOneOptions, Repository } from 'typeorm';
 
 export default class CityCompanyRepository implements ICityCompanyRepository {
   constructor(
     @InjectRepository(CityCompanyModel)
     private readonly cityCompanyRepository: Repository<CityCompanyModel>,
   ) {}
+  async findOne(
+    query: CityCompanyQueryOptions,
+  ): AsyncResult<AppException, CityCompanyEntity> {
+    try {
+      let options: FindOneOptions<CityCompanyModel> = {
+        relations: query.relations,
+        select: query.selectFields,
+      };
+
+      if (query.companyId) {
+        options = { ...options, where: { id: query.companyId } };
+      }
+      return right(
+        CityCompanyMapper.toEntity(
+          await this.cityCompanyRepository.findOneOrFail(options),
+        ),
+      );
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        return left(
+          new CityRepositoryException(ErrorMessages.COMPANY_NOT_FOUND, 404),
+        );
+      }
+      return left(
+        new CityRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, error),
+      );
+    }
+  }
 
   create(cityCompanyEntity: CityCompanyEntity): CityCompanyModel {
     const cityCompanyData = CityCompanyMapper.toModel(cityCompanyEntity);

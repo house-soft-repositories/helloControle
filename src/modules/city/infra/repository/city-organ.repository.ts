@@ -7,14 +7,43 @@ import CityOrganEntity from '@/modules/city/domain/entities/city-organ.entity';
 import CityRepositoryException from '@/modules/city/exceptions/city_repository.exception';
 import CityOrganMapper from '@/modules/city/infra/mapper/city-organ.mapper';
 import CityOrganModel from '@/modules/city/infra/models/city-organ.model';
+import { CityOrganQueryOptions } from '@/modules/city/infra/query/query_objects';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, FindOneOptions, Repository } from 'typeorm';
 
 export default class CityOrganRepository implements ICityOrganRepository {
   constructor(
     @InjectRepository(CityOrganModel)
     private readonly cityOrganRepository: Repository<CityOrganModel>,
   ) {}
+  async findOne(
+    query: CityOrganQueryOptions,
+  ): AsyncResult<AppException, CityOrganEntity> {
+    try {
+      let options: FindOneOptions<CityOrganModel> = {
+        relations: query.relations,
+        select: query.selectFields,
+      };
+
+      if (query.organId) {
+        options = { ...options, where: { id: query.organId } };
+      }
+      return right(
+        CityOrganMapper.toEntity(
+          await this.cityOrganRepository.findOneOrFail(options),
+        ),
+      );
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        return left(
+          new CityRepositoryException(ErrorMessages.ORGAN_NOT_FOUND, 404),
+        );
+      }
+      return left(
+        new CityRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500,  error),
+      );
+    }
+  }
 
   create(cityOrganEntity: CityOrganEntity): CityOrganModel {
     const cityOrganData = CityOrganMapper.toModel(cityOrganEntity);
