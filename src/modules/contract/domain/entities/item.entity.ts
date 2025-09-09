@@ -6,7 +6,7 @@ interface ItemEntityProps {
   id?: string;
   name: string;
   description?: string | null;
-  unitPrice: number;
+  unitPrice: number | null;
   totalPrice?: number;
   amountUsed: number;
   quantityUsed?: number | null;
@@ -26,64 +26,72 @@ export default class ItemEntity {
       unitPrice: props.unitPrice,
       totalPrice: props.totalPrice,
       amountUsed: props.amountUsed,
-      quantityUsed:
-        props.type === ItemTypeEnum.PRODUCT ? props.quantityUsed! : null,
-      quantityTotal:
-        props.type === ItemTypeEnum.PRODUCT ? props.quantityTotal! : null,
+      quantityUsed: props.quantityUsed,
+      quantityTotal: props.quantityTotal,
       type: props.type,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
     };
   }
   static validate(props: ItemEntityProps) {
+    if (!ItemTypeEnum[props.type]) {
+      throw new ItemDomainException('Invalid item type');
+    }
     if (!props.name) {
       throw new ItemDomainException('Name is required');
     }
-    if (props.unitPrice <= 0) {
-      throw new ItemDomainException('Unit price must be greater than zero');
+    if (props.amountUsed < 0) {
+      throw new ItemDomainException(
+        'Amount used must be greater than or equal to 0',
+      );
     }
+    if (props.type === ItemTypeEnum.SERVICE) {
+      if (!props.totalPrice) {
+        throw new ItemDomainException('Item type service must have totalPrice');
+      }
+      if (props.amountUsed > props.totalPrice) {
+        throw new ItemDomainException(
+          'Amount used must be than or equal to total price',
+        );
+      }
+    }
+
     if (props.type === ItemTypeEnum.PRODUCT) {
       if (props.quantityTotal == null || props.quantityTotal <= 0) {
         throw new ItemDomainException('Product must have quantityTotal > 0');
       }
-      console.log('Quantity Used', props.quantityUsed);
       if (props.quantityUsed == null || props.quantityUsed < 0) {
         throw new ItemDomainException('Product must have quantityUsed >= 0');
       }
       if (props.quantityUsed > props.quantityTotal) {
         throw new ItemDomainException(
-          'Quantity used must be <= quantity total',
+          'Quantity used must be than or equal to quantity total',
         );
       }
-    }
-    if (props.type === ItemTypeEnum.SERVICE) {
-      if (props.totalPrice == null || props.totalPrice <= 0) {
-        throw new ItemDomainException('Service must have totalPrice > 0');
-      }
-    }
-    if (props.amountUsed < 0) {
-      throw new ItemDomainException('Amount used must be >= 0');
-    }
-    if (props.totalPrice != null && props.amountUsed > props.totalPrice) {
-      throw new ItemDomainException(
-        'Amount used must be than or equal to total price',
-      );
     }
   }
 
   static create(props: ItemEntityProps) {
+    props.amountUsed = 0;
+
     let totalPrice = props.totalPrice;
+
     if (props.type === ItemTypeEnum.PRODUCT) {
-      if (props.quantityTotal == null || props.quantityUsed == null) {
+      if (props.quantityTotal == null || props.unitPrice == null) {
         throw new ItemDomainException(
-          'Product must have quantityTotal and quantityUsed',
+          'Product must have quantityTotal and unitPrice defined',
         );
       }
+      props.quantityUsed = 0;
       totalPrice = props.unitPrice * props.quantityTotal;
-    } else if (props.type === ItemTypeEnum.SERVICE) {
+    }
+    if (props.type === ItemTypeEnum.SERVICE) {
       if (totalPrice == null) {
         throw new ItemDomainException('Service must have totalPrice');
       }
+      props.unitPrice = null;
+      props.quantityTotal = null;
+      props.quantityUsed = null;
     }
     this.validate({ ...props, totalPrice });
     return new ItemEntity({
@@ -120,10 +128,10 @@ export default class ItemEntity {
     return this.props.name;
   }
   get description() {
-    return this.props.description;
+    return this.props.description || null;
   }
   get unitPrice() {
-    return this.props.unitPrice;
+    return this.props.unitPrice || null;
   }
   get totalPrice() {
     return this.props.totalPrice!;
@@ -132,10 +140,10 @@ export default class ItemEntity {
     return this.props.amountUsed;
   }
   get quantityUsed() {
-    return this.props.quantityUsed!;
+    return this.props.quantityUsed || null;
   }
   get quantityTotal() {
-    return this.props.quantityTotal!;
+    return this.props.quantityTotal || null;
   }
   get type() {
     return this.props.type;

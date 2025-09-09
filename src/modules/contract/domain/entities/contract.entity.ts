@@ -171,7 +171,39 @@ export default class ContractEntity {
     };
   }
 
+  checkItemsTotalAgainstContractValue() {
+    const items = this.props.items;
+    if (!items || items.length === 0) {
+      return;
+    }
+    const sumTotalPriceItems = items.reduce(
+      (sum, current) => sum + current.totalPrice,
+      0,
+    );
+
+    if (sumTotalPriceItems < this.props.valorTotal) {
+      throw new ContractDomainException(
+        'Sum of item total prices is less than contract total value',
+      );
+    }
+  }
+
   addItem(item: ItemEntity) {
+    const items = this.props.items;
+    let sumTotalPriceItems = 0;
+    if (items) {
+      sumTotalPriceItems = items.reduce(
+        (sum, current) => sum + current.totalPrice,
+        0,
+      );
+    }
+
+    if (sumTotalPriceItems + item.totalPrice > this.props.valorTotal) {
+      throw new ContractDomainException(
+        'Total price of items exceeds contract total value',
+      );
+    }
+
     this.props.items!.push(item);
     this.toTouch();
   }

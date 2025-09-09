@@ -66,6 +66,7 @@ export default class CreateContractService implements ICreateContractUseCase {
           );
         });
       }
+      contractEntity.checkItemsTotalAgainstContractValue();
 
       const fileName = `${contractEntity.uuid}.${param.contractFile.originalName
         .split('.')
