@@ -1,3 +1,5 @@
+import { User } from '@/core/decorators/user_request.decorator';
+import AuthGuard from '@/core/guard/auth.guard';
 import ICreateCityCompanyUseCase, {
   CreateCityCompanyParam,
 } from '@/modules/city/domain/usecase/i_create_city_company_use_case';
@@ -20,6 +22,8 @@ import IFindCityCompanyByIdUseCase, {
 import IFindCityOrganByIdUseCase, {
   FindCityOrganByIdParam,
 } from '@/modules/city/domain/usecase/i_find_city_organ_by_id_use_case';
+import IFindCompaniesByCityIdUseCase from '@/modules/city/domain/usecase/i_find_companies_by_city_id_use_case';
+import IFindOrgansByCityIdUseCase from '@/modules/city/domain/usecase/i_find_organs_by_city_id_use_case';
 import IUpdateCityCompanyUseCase, {
   UpdateCityCompanyParam,
 } from '@/modules/city/domain/usecase/i_update_city_company_use_case';
@@ -43,9 +47,12 @@ import {
   FIND_ALL_CITY_ORGANS_SERVICE,
   FIND_CITY_COMPANY_BY_ID_SERVICE,
   FIND_CITY_ORGAN_BY_ID_SERVICE,
+  FIND_COMPANIES_BY_CITY_ID_SERVICE,
+  FIND_ORGANS_BY_CITY_ID_SERVICE,
   UPDATE_CITY_COMPANY_SERVICE,
   UPDATE_CITY_ORGAN_SERVICE,
 } from '@/modules/city/symbols';
+import UserDto from '@/modules/users/dtos/user.dto';
 import {
   Body,
   Controller,
@@ -57,6 +64,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 
@@ -83,6 +91,10 @@ export default class CityController {
     private readonly findCityOrganByIdService: IFindCityOrganByIdUseCase,
     @Inject(UPDATE_CITY_ORGAN_SERVICE)
     private readonly updateCityOrganService: IUpdateCityOrganUseCase,
+    @Inject(FIND_COMPANIES_BY_CITY_ID_SERVICE)
+    private readonly findCompaniesByCityIdService: IFindCompaniesByCityIdUseCase,
+    @Inject(FIND_ORGANS_BY_CITY_ID_SERVICE)
+    private readonly findOrgansByCityIdService: IFindOrgansByCityIdUseCase,
   ) {}
 
   @HttpCode(201)
@@ -104,6 +116,46 @@ export default class CityController {
   async findAll() {
     const param = new FindAllCitiesParam();
     const result = await this.findAllCitiesService.execute(param);
+
+    if (result.isLeft()) {
+      throw new HttpException(result.value, result.value.statusCode, {
+        cause: result.value.cause,
+      });
+    }
+
+    return result.value.fromResponse();
+  }
+
+  @HttpCode(200)
+  @Get('organs-by-city')
+  @UseGuards(AuthGuard)
+  async findOrgansByCityId(@User() userDto: UserDto) {
+    if (userDto.currentCityId === null) {
+      throw new HttpException('User has no city selected', 400);
+    }
+    const result = await this.findOrgansByCityIdService.execute({
+      cityId: userDto.currentCityId,
+    });
+
+    if (result.isLeft()) {
+      throw new HttpException(result.value, result.value.statusCode, {
+        cause: result.value.cause,
+      });
+    }
+
+    return result.value.fromResponse();
+  }
+
+  @HttpCode(200)
+  @Get('companies-by-city')
+  @UseGuards(AuthGuard)
+  async findCompaniesByCityId(@User() userDto: UserDto) {
+    if (userDto.currentCityId === null) {
+      throw new HttpException('User has no city selected', 400);
+    }
+    const result = await this.findCompaniesByCityIdService.execute({
+      cityId: userDto.currentCityId,
+    });
 
     if (result.isLeft()) {
       throw new HttpException(result.value, result.value.statusCode, {

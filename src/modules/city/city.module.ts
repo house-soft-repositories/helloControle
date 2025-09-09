@@ -1,3 +1,9 @@
+import CoreModule from '@/core/core_module';
+import AuthModule from '@/modules/auth/auth.module';
+import {
+  ICityCompanyRepository,
+  ICityOrganRepository,
+} from '@/modules/city/adapters';
 import ICityRepository from '@/modules/city/adapters/i_city_repository';
 import CreateCityService from '@/modules/city/application/create_city.service';
 import CreateCityCompanyService from '@/modules/city/application/create_city_company.service';
@@ -7,6 +13,8 @@ import FindAllCityCompaniesService from '@/modules/city/application/find_all_cit
 import FindAllCityOrgansService from '@/modules/city/application/find_all_city_organs.service';
 import FindCityCompanyByIdService from '@/modules/city/application/find_city_company_by_id.service';
 import FindCityOrganByIdService from '@/modules/city/application/find_city_organ_by_id.service';
+import FindCompaniesByCityIdService from '@/modules/city/application/find_companies_by_city_id.service';
+import FindOrgansByCityIdService from '@/modules/city/application/find_organs_by_city_id.service';
 import UpdateCityCompanyService from '@/modules/city/application/update_city_company.service';
 import UpdateCityOrganService from '@/modules/city/application/update_city_organ.service';
 import CityController from '@/modules/city/controllers/city.controller';
@@ -28,16 +36,20 @@ import {
   FIND_ALL_CITY_ORGANS_SERVICE,
   FIND_CITY_COMPANY_BY_ID_SERVICE,
   FIND_CITY_ORGAN_BY_ID_SERVICE,
+  FIND_COMPANIES_BY_CITY_ID_SERVICE,
+  FIND_ORGANS_BY_CITY_ID_SERVICE,
   UPDATE_CITY_COMPANY_SERVICE,
   UPDATE_CITY_ORGAN_SERVICE,
 } from '@/modules/city/symbols';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([CityModel, CityCompanyModel, CityOrganModel]),
+    forwardRef(() => AuthModule),
+    CoreModule,
   ],
   controllers: [CityController],
   providers: [
@@ -118,6 +130,18 @@ import { Repository } from 'typeorm';
       provide: UPDATE_CITY_ORGAN_SERVICE,
       useFactory: (cityOrganRepository: CityOrganRepository) =>
         new UpdateCityOrganService(cityOrganRepository),
+    },
+    {
+      inject: [CITY_ORGAN_REPOSITORY],
+      provide: FIND_ORGANS_BY_CITY_ID_SERVICE,
+      useFactory: (cityOrganRepository: ICityOrganRepository) =>
+        new FindOrgansByCityIdService(cityOrganRepository),
+    },
+    {
+      inject: [CITY_COMPANY_REPOSITORY],
+      provide: FIND_COMPANIES_BY_CITY_ID_SERVICE,
+      useFactory: (cityCompanyRepository: ICityCompanyRepository) =>
+        new FindCompaniesByCityIdService(cityCompanyRepository),
     },
   ],
   exports: [
