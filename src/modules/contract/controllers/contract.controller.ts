@@ -22,8 +22,6 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
@@ -43,7 +41,6 @@ export default class ContractController {
   @HttpCode(201)
   @Post('')
   @UseInterceptors(FileInterceptor('contractFile', contractFileUploadConfig))
-  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Contract data with file upload',

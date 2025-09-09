@@ -1,3 +1,4 @@
+import BaseFileInterface from '@/core/interface/base_file_interface';
 import UseCase from '@/core/interface/use_case';
 import ContractEntity from '@/modules/contract/domain/entities/contract.entity';
 import ItemTypeEnum from '@/modules/contract/domain/entities/item_type.enum';
@@ -24,13 +25,7 @@ export class CreateContractParam {
       quantityTotal?: number | null;
       type: ItemTypeEnum;
     }[],
-    public readonly contractFile: {
-      originalName: string;
-      buffer: Buffer;
-      mimetype: string;
-      size: number;
-      encoding?: string;
-    },
+    public readonly contractFile: BaseFileInterface,
     public readonly nome?: string,
     public readonly descricao?: string,
     public readonly cidadeContratante?: string,
