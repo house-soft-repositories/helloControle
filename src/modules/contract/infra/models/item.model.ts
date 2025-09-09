@@ -16,12 +16,13 @@ export default class ItemModel extends BaseModelIdUuidCreated {
     type: 'decimal',
     precision: 10,
     scale: 2,
+    nullable: true,
     transformer: {
-      to: (value: number) => String(value),
-      from: (value: string) => parseFloat(value),
+      to: (value: number | null) => (value ? String(value) : null),
+      from: (value: string | null) => (value ? parseFloat(value) : null),
     },
   })
-  unitPrice: number;
+  unitPrice: number | null;
 
   @Column({
     name: 'total_price',
@@ -48,10 +49,10 @@ export default class ItemModel extends BaseModelIdUuidCreated {
   amountUsed: number;
 
   @Column({ name: 'quantity_used', type: 'int', nullable: true })
-  quantityUsed?: number | null;
+  quantityUsed: number | null;
 
   @Column({ name: 'quantity_total', type: 'int', nullable: true })
-  quantityTotal?: number | null;
+  quantityTotal: number | null;
 
   @Column({
     name: 'type',
