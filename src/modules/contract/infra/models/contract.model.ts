@@ -69,6 +69,9 @@ export default class ContractModel extends BaseModel {
   @Column({ name: 'cidade_contratante_id', nullable: true })
   cidadeContratanteId: number | null;
 
+  @Column({ name: 'file_url', type: 'varchar', nullable: true })
+  fileUrl: string | null;
+
   @OneToMany(() => ItemModel, item => item.contract, {
     cascade: true,
     eager: true,

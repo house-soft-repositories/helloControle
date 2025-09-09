@@ -13,12 +13,19 @@ import {
   FIND_ALL_CONTRACTS_SERVICE,
   FIND_CONTRACT_BY_ID_SERVICE,
 } from '@/modules/contract/symbols';
+import IFileRepository from '@/modules/file/adapters/i_file_repository';
+import FileModule from '@/modules/file/file.module';
+import { FILE_REPOSITORY } from '@/modules/file/symbols';
 import { Module } from '@nestjs/common';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 @Module({
-  imports: [CoreModule, TypeOrmModule.forFeature([ContractModel, ItemModel])],
+  imports: [
+    CoreModule,
+    FileModule,
+    TypeOrmModule.forFeature([ContractModel, ItemModel]),
+  ],
   controllers: [ContractController],
   providers: [
     {
@@ -28,10 +35,12 @@ import { Repository } from 'typeorm';
         new ContractRepository(contractRepository),
     },
     {
-      inject: [CONTRACT_REPOSITORY],
+      inject: [CONTRACT_REPOSITORY, FILE_REPOSITORY],
       provide: CREATE_CONTRACT_SERVICE,
-      useFactory: (contractRepository: IContractRepository) =>
-        new CreateContractService(contractRepository),
+      useFactory: (
+        contractRepository: IContractRepository,
+        fileRepository: IFileRepository,
+      ) => new CreateContractService(contractRepository, fileRepository),
     },
     {
       inject: [CONTRACT_REPOSITORY],

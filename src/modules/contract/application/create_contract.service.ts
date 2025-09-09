@@ -10,9 +10,14 @@ import ICreateContractUseCase, {
   CreateContractParam,
   CreateContractResponse,
 } from '@/modules/contract/domain/usecase/i_create_contract_use_case';
+import IFileRepository from '@/modules/file/adapters/i_file_repository';
+import FileEntity from '@/modules/file/domain/entities/file.entity';
 
 export default class CreateContractService implements ICreateContractUseCase {
-  constructor(private readonly contractRepository: IContractRepository) {}
+  constructor(
+    private readonly contractRepository: IContractRepository,
+    private readonly fileRepository: IFileRepository,
+  ) {}
   async execute(
     param: CreateContractParam,
   ): AsyncResult<AppException, CreateContractResponse> {
@@ -60,6 +65,26 @@ export default class CreateContractService implements ICreateContractUseCase {
             }),
           );
         });
+      }
+
+      const fileName = `${contractEntity.uuid}.${param.contractFile.originalName
+        .split('.')
+        .pop()}`;
+
+      contractEntity.setContractFileUrl(`${fileName}`);
+
+      const contractFiledSaved = await this.fileRepository.save(
+        new FileEntity({
+          buffer: param.contractFile.buffer,
+          originalName: fileName,
+          mimetype: param.contractFile.mimetype,
+          filename: fileName,
+          size: param.contractFile.size,
+          encoding: param.contractFile.encoding,
+        }),
+      );
+      if (contractFiledSaved.isLeft()) {
+        return left(contractFiledSaved.value);
       }
 
       const savedContract = await this.contractRepository.save(contractEntity);
