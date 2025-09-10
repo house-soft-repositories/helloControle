@@ -11,9 +11,9 @@ interface ContractEntityProps {
   valorGlosado: number;
   dataAssinatura: Date;
   dataVencimento: Date;
-  orgaoContratante: string;
-  empresaContratada: string;
-  cidadeContratante?: string;
+  cityId: number | null;
+  organId: number | null;
+  companyId: number | null;
   fileUrl?: string | null;
   items?: ItemEntity[];
   createdAt?: Date;
@@ -32,9 +32,9 @@ export default class ContractEntity {
       valorGlosado: props.valorGlosado,
       dataAssinatura: props.dataAssinatura,
       dataVencimento: props.dataVencimento,
-      orgaoContratante: props.orgaoContratante,
-      empresaContratada: props.empresaContratada,
-      cidadeContratante: props.cidadeContratante,
+      cityId: props.cityId,
+      organId: props.organId,
+      companyId: props.companyId,
       items: props.items ?? [],
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
@@ -61,11 +61,14 @@ export default class ContractEntity {
     if (!props.dataVencimento) {
       throw new ContractDomainException('Expiration date is required');
     }
-    if (!props.orgaoContratante) {
-      throw new ContractDomainException('Contracting orgao is required');
+    if (!props.organId) {
+      throw new ContractDomainException('Contracting organ is required');
     }
-    if (!props.empresaContratada) {
+    if (!props.companyId) {
       throw new ContractDomainException('Contracted company is required');
+    }
+    if (!props.cityId) {
+      throw new ContractDomainException('City is required');
     }
     if (
       props.dataAssinatura &&
@@ -118,18 +121,17 @@ export default class ContractEntity {
   get dataVencimento() {
     return this.props.dataVencimento;
   }
-
-  get orgaoContratante() {
-    return this.props.orgaoContratante;
+  get cityId() {
+    return this.props.cityId;
+  }
+  get organId() {
+    return this.props.organId;
   }
 
-  get empresaContratada() {
-    return this.props.empresaContratada;
+  get companyId() {
+    return this.props.companyId;
   }
 
-  get cidadeContratante() {
-    return this.props.cidadeContratante;
-  }
   get items() {
     return this.props.items!;
   }
@@ -161,9 +163,8 @@ export default class ContractEntity {
       valorGlosado: this.props.valorGlosado,
       dataAssinatura: this.props.dataAssinatura,
       dataVencimento: this.props.dataVencimento,
-      orgaoContratante: this.props.orgaoContratante,
-      empresaContratada: this.props.empresaContratada,
-      cidadeContratante: this.props.cidadeContratante,
+      organId: this.organId,
+      companyId: this.companyId,
       fileUrl: this.fileUrl,
       items: this.props.items?.map(item => item.toObject()),
       createdAt: this.props.createdAt,

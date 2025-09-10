@@ -13,8 +13,9 @@ export class CreateContractParam {
     public readonly valorGlosado: number,
     public readonly dataAssinatura: Date,
     public readonly dataVencimento: Date,
-    public readonly orgaoContratante: string,
-    public readonly empresaContratada: string,
+    public readonly organId: number,
+    public readonly companyId: number,
+    public readonly cityId: number,
     public readonly items: {
       name: string;
       description?: string | null;

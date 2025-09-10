@@ -13,11 +13,5 @@ export default interface IContractRepository {
   ): AsyncResult<ContractRepositoryException, ContractEntity>;
   findAll(): AsyncResult<ContractRepositoryException, ContractEntity[]>;
 
-  findByOrgao(
-    orgao: string,
-  ): AsyncResult<ContractRepositoryException, ContractEntity[]>;
-  findByEmpresa(
-    empresa: string,
-  ): AsyncResult<ContractRepositoryException, ContractEntity[]>;
   delete(id: string): AsyncResult<ContractRepositoryException, Unit>;
 }

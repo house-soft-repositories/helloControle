@@ -2,6 +2,8 @@ import ItemDto from '@/modules/contract/dtos/item.dto';
 import {
   IsArray,
   IsDateString,
+  IsEmpty,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -41,17 +43,17 @@ export default class ContractDto {
   @IsNotEmpty()
   dataVencimento: Date;
 
-  @IsString()
-  @IsNotEmpty()
-  orgaoContratante: string;
+  @IsInt()
+  @IsEmpty()
+  organId: number | null;
 
-  @IsString()
-  @IsNotEmpty()
-  empresaContratada: string;
+  @IsInt()
+  @IsEmpty()
+  companyId: number | null;
 
-  @IsString()
-  @IsOptional()
-  cidadeContratante?: string;
+  @IsInt()
+  @IsEmpty()
+  cityId: number | null;
 
   @IsArray({ each: true })
   items: ItemDto[];

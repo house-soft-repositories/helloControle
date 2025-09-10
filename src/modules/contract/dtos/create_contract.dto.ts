@@ -2,15 +2,14 @@ import ContractDto from '@/modules/contract/dtos/contract.dto';
 import CreateItemDto from '@/modules/contract/dtos/create_item.dto';
 import { PickType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsArray, IsDate, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsArray, IsDate, IsInt, IsNotEmpty, IsNumber } from 'class-validator';
 
 export default class CreateContractDto extends PickType(ContractDto, [
   'id',
   'nome',
   'descricao',
-  'orgaoContratante',
-  'empresaContratada',
-  'cidadeContratante',
+  'organId',
+  'companyId',
 ]) {
   @IsArray()
   @Transform(({ value }) => {
@@ -111,4 +110,22 @@ export default class CreateContractDto extends PickType(ContractDto, [
     }
   })
   declare dataVencimento: Date;
+
+  @IsInt()
+  @Transform(({ value }) => {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+    return parseInt(value);
+  })
+  declare organId: number;
+
+  @IsInt()
+  @Transform(({ value }) => {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+    return parseInt(value);
+  })
+  declare companyId: number;
 }

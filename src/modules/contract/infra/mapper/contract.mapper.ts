@@ -14,9 +14,9 @@ export default abstract class ContractMapper {
       valorGlosado: contractModel.valorGlosado,
       dataAssinatura: contractModel.dataAssinatura,
       dataVencimento: contractModel.dataVencimento,
-      orgaoContratante: contractModel.orgaoContratante,
-      empresaContratada: contractModel.empresaContratada,
-      cidadeContratante: contractModel.cidadeContratante?.name,
+      organId: contractModel.organId,
+      cityId: contractModel.cityId,
+      companyId: contractModel.companyId,
       items: contractModel.items.map(itemModel =>
         ItemMapper.toEntity(itemModel),
       ),
@@ -36,11 +36,10 @@ export default abstract class ContractMapper {
       valorGlosado: contractEntity.valorGlosado,
       dataAssinatura: contractEntity.dataAssinatura,
       dataVencimento: contractEntity.dataVencimento,
-      orgaoContratante: contractEntity.orgaoContratante,
-      empresaContratada: contractEntity.empresaContratada,
+      organId: contractEntity.organId,
+      cityId: contractEntity.cityId,
+      companyId: contractEntity.companyId,
       fileUrl: contractEntity.fileUrl,
-      // Note: cidadeContratante relationship is handled separately
-      cidadeContratanteId: null, // This should be set when relating to a city
       items: (contractEntity.items ?? []).map(item => {
         return ItemMapper.toModel(item) as ItemModel;
       }),
@@ -61,8 +60,8 @@ export default abstract class ContractMapper {
       valorGlosado: entityObject.valorGlosado,
       dataAssinatura: entityObject.dataAssinatura,
       dataVencimento: entityObject.dataVencimento,
-      orgaoContratante: entityObject.orgaoContratante,
-      empresaContratada: entityObject.empresaContratada,
+      organId: entityObject.organId,
+      companyId: entityObject.companyId,
       // Exclude cidadeContratante relationship field for updates
       updatedAt: new Date(),
     };
