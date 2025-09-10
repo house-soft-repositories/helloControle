@@ -12,6 +12,8 @@ export default interface IContractRepository {
     query: ContractQueryOptions,
   ): AsyncResult<ContractRepositoryException, ContractEntity>;
   findAll(): AsyncResult<ContractRepositoryException, ContractEntity[]>;
-
+  findAllByCityId(
+    cityId: number,
+  ): AsyncResult<ContractRepositoryException, ContractEntity[]>;
   delete(id: string): AsyncResult<ContractRepositoryException, Unit>;
 }

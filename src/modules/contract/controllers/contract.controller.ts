@@ -4,6 +4,7 @@ import CreateContractService from '@/modules/contract/application/create_contrac
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
 import FindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
 import { contractFileUploadConfig } from '@/modules/contract/config/multer.config';
+import IGetContractByCityUseCase from '@/modules/contract/domain/usecase/i_get_contracts_by_city_use_case';
 import ContractDto from '@/modules/contract/dtos/contract.dto';
 import CreateContractDto from '@/modules/contract/dtos/create_contract.dto';
 import CreateContractWithFileDto from '@/modules/contract/dtos/create_contract_with_file.dto';
@@ -11,6 +12,7 @@ import {
   CREATE_CONTRACT_SERVICE,
   FIND_ALL_CONTRACTS_SERVICE,
   FIND_CONTRACT_BY_ID_SERVICE,
+  GET_CONTRACTS_BY_CITY_SERVICE,
 } from '@/modules/contract/symbols';
 import UserDto from '@/modules/users/dtos/user.dto';
 import {
@@ -40,6 +42,8 @@ export default class ContractController {
     private readonly findAllContractsService: FindAllContractsService,
     @Inject(FIND_CONTRACT_BY_ID_SERVICE)
     private readonly findContractByIdService: FindContractByIdService,
+    @Inject(GET_CONTRACTS_BY_CITY_SERVICE)
+    private readonly getContractsByCityService: IGetContractByCityUseCase,
   ) {}
 
   @HttpCode(201)
@@ -88,6 +92,26 @@ export default class ContractController {
     return result.value.map(contract =>
       plainToClass(ContractDto, contract.toObject()),
     );
+  }
+
+  @HttpCode(200)
+  @Get('city')
+  @UseGuards(AuthGuard)
+  async getContractsByCity(@User() user: UserDto) {
+    const result = await this.getContractsByCityService.execute({
+      cityId: user.currentCityId!,
+    });
+    if (result.isLeft()) {
+      throw new HttpException(
+        result.value.message,
+        result.value.statusCode || 500,
+        {
+          cause: result.value.cause,
+        },
+      );
+    }
+
+    return result.value.fromResponse();
   }
 
   @HttpCode(200)

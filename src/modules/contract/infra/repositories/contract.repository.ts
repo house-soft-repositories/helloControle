@@ -16,6 +16,23 @@ export default class ContractRepository implements IContractRepository {
     @InjectRepository(ContractModel)
     private contractRepository: Repository<ContractModel>,
   ) {}
+  async findAllByCityId(
+    cityId: number,
+  ): AsyncResult<ContractRepositoryException, ContractEntity[]> {
+    try {
+      const contracts = await this.contractRepository.find({
+        where: { cityId: cityId },
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+      return right(contracts.map(ContractMapper.toEntity));
+    } catch (e) {
+      return left(
+        new ContractRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, e),
+      );
+    }
+  }
   async findOne(
     query: ContractQueryOptions,
   ): AsyncResult<ContractRepositoryException, ContractEntity> {
