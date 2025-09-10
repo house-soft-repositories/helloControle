@@ -1,16 +1,26 @@
+import AppException from '@/core/exceptions/app_exception';
 import AsyncResult from '@/core/types/async_result';
+import { left, right } from '@/core/types/either';
 import IContractRepository from '@/modules/contract/adapters/i_contract_repository';
-import ContractEntity from '@/modules/contract/domain/entities/contract.entity';
-import ContractRepositoryException from '@/modules/contract/exceptions/contract_repository_exception';
+import IFindContractByIdService, {
+  FindContractByIdParam,
+  FindContractByIdResponse,
+} from '@/modules/contract/domain/usecase/i_find_contract_by_uuid_use_case';
 
-export default class FindContractByIdService {
+export default class FindContractByIdService
+  implements IFindContractByIdService
+{
   constructor(private readonly contractRepository: IContractRepository) {}
-
   async execute(
-    id: string,
-  ): AsyncResult<ContractRepositoryException, ContractEntity | null> {
-    return this.contractRepository.findOne({
-      contractId: id,
+    param: FindContractByIdParam,
+  ): AsyncResult<AppException, FindContractByIdResponse> {
+    const contractResult = await this.contractRepository.findOne({
+      contractUuid: param.uuid,
+      relations: ['items'],
     });
+    if (contractResult.isLeft()) {
+      return left(contractResult.value);
+    }
+    return right(new FindContractByIdResponse(contractResult.value));
   }
 }

@@ -3,7 +3,7 @@ import AuthModule from '@/modules/auth/auth.module';
 import IContractRepository from '@/modules/contract/adapters/i_contract_repository';
 import CreateContractService from '@/modules/contract/application/create_contract.service';
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
-import FindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
+import IFindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
 import GetContractsByCityService from '@/modules/contract/application/get_contracts_by_city.service';
 import ContractController from '@/modules/contract/controllers/contract.controller';
 import ContractModel from '@/modules/contract/infra/models/contract.model';
@@ -56,7 +56,7 @@ import { Repository } from 'typeorm';
       inject: [CONTRACT_REPOSITORY],
       provide: FIND_CONTRACT_BY_ID_SERVICE,
       useFactory: (contractRepository: IContractRepository) =>
-        new FindContractByIdService(contractRepository),
+        new IFindContractByIdService(contractRepository),
     },
     {
       inject: [CONTRACT_REPOSITORY],

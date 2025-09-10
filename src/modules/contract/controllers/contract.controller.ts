@@ -2,7 +2,7 @@ import { User } from '@/core/decorators/user_request.decorator';
 import AuthGuard from '@/core/guard/auth.guard';
 import CreateContractService from '@/modules/contract/application/create_contract.service';
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
-import FindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
+import IFindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
 import { contractFileUploadConfig } from '@/modules/contract/config/multer.config';
 import IGetContractByCityUseCase from '@/modules/contract/domain/usecase/i_get_contracts_by_city_use_case';
 import ContractDto from '@/modules/contract/dtos/contract.dto';
@@ -22,8 +22,8 @@ import {
   HttpCode,
   HttpException,
   Inject,
-  NotFoundException,
   Param,
+  ParseUUIDPipe,
   Post,
   UploadedFile,
   UseGuards,
@@ -41,7 +41,7 @@ export default class ContractController {
     @Inject(FIND_ALL_CONTRACTS_SERVICE)
     private readonly findAllContractsService: FindAllContractsService,
     @Inject(FIND_CONTRACT_BY_ID_SERVICE)
-    private readonly findContractByIdService: FindContractByIdService,
+    private readonly findContractByIdService: IFindContractByIdService,
     @Inject(GET_CONTRACTS_BY_CITY_SERVICE)
     private readonly getContractsByCityService: IGetContractByCityUseCase,
   ) {}
@@ -115,9 +115,11 @@ export default class ContractController {
   }
 
   @HttpCode(200)
-  @Get(':id')
-  async findById(@Param('id') id: string) {
-    const result = await this.findContractByIdService.execute(id);
+  @Get(':uuid')
+  async findByUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    const result = await this.findContractByIdService.execute({
+      uuid,
+    });
     if (result.isLeft()) {
       throw new HttpException(
         result.value.message,
@@ -128,10 +130,6 @@ export default class ContractController {
       );
     }
 
-    if (!result.value) {
-      throw new NotFoundException(`Contrato com ID ${id} não encontrado`);
-    }
-
-    return plainToClass(ContractDto, result.value.toObject());
+    return plainToClass(ContractDto, result.value.fromResponse());
   }
 }
