@@ -46,9 +46,10 @@ export default class UserController {
 
   @Get('')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async findAllUsers() {
-    const param = new FindAllUsersParam(true);
+  @Roles(UserRole.ADMIN, UserRole.SUPERUSER)
+  async findAllUsers(@User() user: UserDto) {
+    const excludeSuperuser = user.role !== UserRole.SUPERUSER;
+    const param = new FindAllUsersParam(true, undefined, excludeSuperuser);
     const result = await this.findAllUsersUseCase.execute(param);
 
     if (result.isLeft()) {
@@ -61,9 +62,13 @@ export default class UserController {
 
   @Get('/city-users/:id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
-  async findUsersByCity(@Param('id', ParseIntPipe) cityId: number) {
-    const param = new FindAllUsersParam(false, cityId);
+  @Roles(UserRole.ADMIN, UserRole.SUPERUSER)
+  async findUsersByCity(
+    @Param('id', ParseIntPipe) cityId: number,
+    @User() user: UserDto,
+  ) {
+    const excludeSuperuser = user.role !== UserRole.SUPERUSER;
+    const param = new FindAllUsersParam(false, cityId, excludeSuperuser);
     const result = await this.findAllUsersUseCase.execute(param);
 
     if (result.isLeft()) {
@@ -120,7 +125,7 @@ export default class UserController {
 
   @Patch('/change/current-city')
   @UseGuards(AuthGuard)
-  @Roles(UserRole.USER)
+  @Roles(UserRole.SUPERUSER, UserRole.ADMIN)
   async changeCurrentCity(
     @User() user: UserDto,
     @Body() body: ChangeUserCurrentCityDto,

@@ -60,7 +60,7 @@ export default class AuthController {
 
   @Post('/register/admin')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.SUPERUSER, UserRole.ADMIN)
   async createAdmin(@Body() createUserAdminDto: CreateUserAdminDto) {
     const param = new CreateUserParam(
       createUserAdminDto.name,

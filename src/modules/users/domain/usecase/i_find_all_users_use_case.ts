@@ -8,6 +8,7 @@ export class FindAllUsersParam {
   constructor(
     public readonly includeInactive?: boolean,
     public readonly cityId?: number,
+    public readonly excludeSuperuser?: boolean,
   ) {}
 }
 
