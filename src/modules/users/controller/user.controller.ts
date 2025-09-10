@@ -14,6 +14,7 @@ import IUpdateUserUseCase, {
 } from '@/modules/users/domain/usecase/i_update_user_use_case';
 import ChangeUserCurrentCityDto from '@/modules/users/dtos/change_user_current_city.dto';
 import UpdateUserDto from '@/modules/users/dtos/update_user.dto';
+import UpdateUserSuperuserDto from '@/modules/users/dtos/update_user_superuser.dto';
 import UserDto from '@/modules/users/dtos/user.dto';
 import {
   CHANGE_USER_CURRENT_CITY_SERVICE,
@@ -75,16 +76,38 @@ export default class UserController {
 
   @Patch('/:id')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRole.ADMIN, UserRole.SUPERUSER)
   async updateUser(
     @Param('id', ParseIntPipe) userId: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: UpdateUserDto | UpdateUserSuperuserDto,
+    @User() user: UserDto,
   ) {
-    const param = new UpdateUserParam(
-      userId,
-      updateUserDto.name,
-      updateUserDto.email,
-    );
+    const isSuperuser = user.role === UserRole.SUPERUSER;
+
+    let param: UpdateUserParam;
+
+    if (isSuperuser) {
+      const superuserDto = updateUserDto as UpdateUserSuperuserDto;
+      param = new UpdateUserParam(
+        userId,
+        superuserDto.name,
+        superuserDto.email,
+        superuserDto.role,
+        superuserDto.currentCityId,
+        true,
+      );
+    } else {
+      const adminDto = updateUserDto as UpdateUserDto;
+      param = new UpdateUserParam(
+        userId,
+        adminDto.name,
+        adminDto.email,
+        undefined,
+        undefined,
+        false,
+      );
+    }
+
     const result = await this.updateUserUseCase.execute(param);
 
     if (result.isLeft()) {

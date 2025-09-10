@@ -93,6 +93,11 @@ export default class UserEntity {
     this.props.currentCityId = cityId;
   }
 
+  updateCurrentCity(cityId: number) {
+    // Método para superuser - sem restrições
+    this.props.currentCityId = cityId;
+  }
+
   updateName(newName: string) {
     if (!NameValidator.validate(newName)) {
       throw new UserDomainException('Invalid name');

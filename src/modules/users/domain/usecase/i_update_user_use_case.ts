@@ -1,4 +1,5 @@
 import UseCase from '@/core/interface/use_case';
+import UserRole from '@/core/types/user_role';
 import UserEntity from '@/modules/users/domain/entities/user.entity';
 
 export default interface IUpdateUserUseCase
@@ -9,6 +10,9 @@ export class UpdateUserParam {
     public readonly userId: number,
     public readonly name?: string,
     public readonly email?: string,
+    public readonly role?: UserRole,
+    public readonly currentCityId?: number,
+    public readonly isSuperuser?: boolean,
   ) {}
 }
 

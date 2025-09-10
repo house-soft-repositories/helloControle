@@ -39,6 +39,17 @@ export default class UpdateUserService implements IUpdateUserUseCase {
         user.updateEmail(param.email);
       }
 
+      // Campos exclusivos para superuser
+      if (param.isSuperuser) {
+        if (param.role !== undefined) {
+          user.updateRole(param.role);
+        }
+
+        if (param.currentCityId !== undefined) {
+          user.updateCurrentCity(param.currentCityId);
+        }
+      }
+
       // Marcar como atualizado
       user.toTouch();
 
