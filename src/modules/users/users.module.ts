@@ -10,12 +10,16 @@ import { CITY_REPOSITORY } from '@/modules/city/symbols';
 import IUserRepository from '@/modules/users/adapters/i_user.repository';
 import ChangeUserCurrentCityService from '@/modules/users/application/change_user_current_city.service';
 import CreateUserService from '@/modules/users/application/create_user.service';
+import FindAllUsersService from '@/modules/users/application/find_all_users.service';
+import UpdateUserService from '@/modules/users/application/update_user.service';
 import UserController from '@/modules/users/controller/user.controller';
 import UserModel from '@/modules/users/infra/models/user.model';
 import UserRepository from '@/modules/users/infra/repositories/user.repository';
 import {
   CHANGE_USER_CURRENT_CITY_SERVICE,
   CREATE_USER_SERVICE,
+  FIND_ALL_USERS_SERVICE,
+  UPDATE_USER_SERVICE,
   USER_REPOSITORY,
 } from '@/modules/users/symbols';
 import { forwardRef, Module } from '@nestjs/common';
@@ -52,6 +56,18 @@ import { Repository } from 'typeorm';
         userRepository: IUserRepository,
         cityRepository: ICityRepository,
       ) => new ChangeUserCurrentCityService(userRepository, cityRepository),
+    },
+    {
+      inject: [USER_REPOSITORY],
+      provide: FIND_ALL_USERS_SERVICE,
+      useFactory: (userRepository: IUserRepository) =>
+        new FindAllUsersService(userRepository),
+    },
+    {
+      inject: [USER_REPOSITORY],
+      provide: UPDATE_USER_SERVICE,
+      useFactory: (userRepository: IUserRepository) =>
+        new UpdateUserService(userRepository),
     },
   ],
   exports: [

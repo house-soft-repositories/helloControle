@@ -52,6 +52,33 @@ export default class UserRepository implements IUserRepository {
       );
     }
   }
+
+  async findAll(query?: UserQueryOptions): AsyncResult<AppException, UserEntity[]> {
+    try {
+      const findOptions: any = {
+        relations: ['currentCity'],
+        order: {
+          createdAt: 'DESC',
+        },
+      };
+
+      // Adicionar filtro por cidade se especificado
+      if (query?.cityId) {
+        findOptions.where = {
+          currentCityId: query.cityId,
+        };
+      }
+
+      const users = await this.userRepository.find(findOptions);
+
+      return right(users.map(user => UserMapper.toEntity(user)));
+    } catch (error) {
+      return left(
+        new UserRepositoryException(ErrorMessages.UNEXPECTED_ERROR, 500, error),
+      );
+    }
+  }
+
   async save(user: UserEntity): AsyncResult<AppException, UserEntity> {
     try {
       const userModel = this.userRepository.create(UserMapper.toModel(user));

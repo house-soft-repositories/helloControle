@@ -83,7 +83,7 @@ export default class UserEntity {
     return this.props.currentCityId!;
   }
 
-  changeCurrentCity(cityId: number | null) {
+  changeCurrentCity(cityId: number) {
     if (this.props.role === UserRole.ADMIN) {
       throw new UserDomainException('Admin user cannot change city');
     }
@@ -91,6 +91,27 @@ export default class UserEntity {
       throw new UserDomainException('City is the same as current');
     }
     this.props.currentCityId = cityId;
+  }
+
+  updateName(newName: string) {
+    if (!NameValidator.validate(newName)) {
+      throw new UserDomainException('Invalid name');
+    }
+    this.props.name = newName;
+  }
+
+  updateEmail(newEmail: string) {
+    if (!EmailValidator.validate(newEmail)) {
+      throw new UserDomainException('Invalid email');
+    }
+    this.props.email = newEmail;
+  }
+
+  updateRole(newRole: UserRole) {
+    if (!newRole) {
+      throw new UserDomainException('Role is required');
+    }
+    this.props.role = newRole;
   }
 
   toTouch() {
