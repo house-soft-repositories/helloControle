@@ -1,19 +1,15 @@
+import AppException from '@/core/exceptions/app_exception';
 import AsyncResult from '@/core/types/async_result';
 import { Unit } from '@/core/types/unit';
 import ContractEntity from '@/modules/contract/domain/entities/contract.entity';
-import ContractRepositoryException from '@/modules/contract/exceptions/contract_repository_exception';
 import { ContractQueryOptions } from '@/modules/contract/infra/query/query_objects';
 
 export default interface IContractRepository {
-  save(
-    contract: ContractEntity,
-  ): AsyncResult<ContractRepositoryException, ContractEntity>;
+  save(contract: ContractEntity): AsyncResult<AppException, ContractEntity>;
   findOne(
     query: ContractQueryOptions,
-  ): AsyncResult<ContractRepositoryException, ContractEntity>;
-  findAll(): AsyncResult<ContractRepositoryException, ContractEntity[]>;
-  findAllByCityId(
-    cityId: number,
-  ): AsyncResult<ContractRepositoryException, ContractEntity[]>;
-  delete(id: string): AsyncResult<ContractRepositoryException, Unit>;
+  ): AsyncResult<AppException, ContractEntity>;
+  findAll(): AsyncResult<AppException, ContractEntity[]>;
+  findAllByCityId(cityId: number): AsyncResult<AppException, ContractEntity[]>;
+  delete(id: string): AsyncResult<AppException, Unit>;
 }
