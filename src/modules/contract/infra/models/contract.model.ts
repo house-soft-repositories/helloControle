@@ -1,4 +1,5 @@
 import { BaseModel } from '@/core/models/base_model';
+import { CityCompanyModel, CityOrganModel } from '@/modules/city/infra/models';
 import CityModel from '@/modules/city/infra/models/city.model';
 import ItemModel from '@/modules/contract/infra/models/item.model';
 import {
@@ -56,18 +57,26 @@ export default class ContractModel extends BaseModel {
   @Column({ name: 'data_vencimento', type: 'date' })
   dataVencimento: Date;
 
-  @Column({ name: 'orgao_contratante', type: 'varchar' })
-  orgaoContratante: string;
+  @ManyToOne(() => CityOrganModel, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'organ_id' })
+  organ: CityOrganModel | null;
 
-  @Column({ name: 'empresa_contratada', type: 'varchar' })
-  empresaContratada: string;
+  @Column({ name: 'organ_id', nullable: true })
+  organId: number | null;
 
-  @ManyToOne(() => CityModel, { nullable: true })
-  @JoinColumn({ name: 'cidade_contratante_id' })
-  cidadeContratante: CityModel | null;
+  @ManyToOne(() => CityCompanyModel, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'company_id' })
+  company: CityCompanyModel | null;
 
-  @Column({ name: 'cidade_contratante_id', nullable: true })
-  cidadeContratanteId: number | null;
+  @Column({ name: 'company_id', nullable: true })
+  companyId: number | null;
+
+  @ManyToOne(() => CityModel, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'city_id' })
+  city: CityModel | null;
+
+  @Column({ name: 'city_id', nullable: true })
+  cityId: number | null;
 
   @Column({ name: 'file_url', type: 'varchar', nullable: true })
   fileUrl: string | null;

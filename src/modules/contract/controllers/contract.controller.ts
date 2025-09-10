@@ -1,3 +1,5 @@
+import { User } from '@/core/decorators/user_request.decorator';
+import AuthGuard from '@/core/guard/auth.guard';
 import CreateContractService from '@/modules/contract/application/create_contract.service';
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
 import FindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
@@ -10,6 +12,7 @@ import {
   FIND_ALL_CONTRACTS_SERVICE,
   FIND_CONTRACT_BY_ID_SERVICE,
 } from '@/modules/contract/symbols';
+import UserDto from '@/modules/users/dtos/user.dto';
 import {
   Body,
   Controller,
@@ -21,6 +24,7 @@ import {
   Param,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -46,12 +50,15 @@ export default class ContractController {
     description: 'Contract data with file upload',
     type: CreateContractWithFileDto,
   })
+  @UseGuards(AuthGuard)
   async create(
     @Body() contractData: CreateContractDto,
+    @User() user: UserDto,
     @UploadedFile() contractFile: Express.Multer.File,
   ) {
     const param = CreateContractWithFileDto.toCreateContractParam(
       contractData,
+      user.currentCityId!,
       contractFile,
     );
 

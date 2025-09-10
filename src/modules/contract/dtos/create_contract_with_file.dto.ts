@@ -12,6 +12,7 @@ export default class CreateContractWithFileDto extends CreateContractDto {
 
   static toCreateContractParam(
     dto: CreateContractDto,
+    cityId: number,
     file: Express.Multer.File,
   ): CreateContractParam {
     return new CreateContractParam(
@@ -20,8 +21,9 @@ export default class CreateContractWithFileDto extends CreateContractDto {
       dto.valorGlosado,
       dto.dataAssinatura,
       dto.dataVencimento,
-      dto.orgaoContratante,
-      dto.empresaContratada,
+      dto.organId,
+      dto.companyId,
+      cityId,
       dto.items.map(item => ({
         ...item,
       })),
@@ -34,7 +36,6 @@ export default class CreateContractWithFileDto extends CreateContractDto {
       },
       dto.nome,
       dto.descricao,
-      dto.cidadeContratante,
     );
   }
 }

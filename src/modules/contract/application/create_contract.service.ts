@@ -44,9 +44,9 @@ export default class CreateContractService implements ICreateContractUseCase {
         valorGlosado: param.valorGlosado,
         dataAssinatura: param.dataAssinatura,
         dataVencimento: param.dataVencimento,
-        orgaoContratante: param.orgaoContratante,
-        empresaContratada: param.empresaContratada,
-        cidadeContratante: param.cidadeContratante,
+        cityId: param.cityId,
+        organId: param.organId,
+        companyId: param.companyId,
       });
 
       if (param.items.length > 0) {

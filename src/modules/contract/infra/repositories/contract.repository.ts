@@ -100,52 +100,6 @@ export default class ContractRepository implements IContractRepository {
     }
   }
 
-  async findByOrgao(
-    orgao: string,
-  ): AsyncResult<ContractRepositoryException, ContractEntity[]> {
-    try {
-      if (!orgao || orgao.trim() === '') {
-        return left(new ContractRepositoryException('Orgão cannot be empty'));
-      }
-
-      const contracts = await this.contractRepository.find({
-        where: { orgaoContratante: orgao },
-        relations: ['cidadeContratante'],
-        order: {
-          createdAt: 'DESC',
-        },
-      });
-      return right(contracts.map(ContractMapper.toEntity));
-    } catch (error) {
-      return left(
-        new ContractRepositoryException(ErrorMessages.UNEXPECTED_ERROR, error),
-      );
-    }
-  }
-
-  async findByEmpresa(
-    empresa: string,
-  ): AsyncResult<ContractRepositoryException, ContractEntity[]> {
-    try {
-      if (!empresa || empresa.trim() === '') {
-        return left(new ContractRepositoryException('Empresa cannot be empty'));
-      }
-
-      const contracts = await this.contractRepository.find({
-        where: { empresaContratada: empresa },
-        relations: ['cidadeContratante'],
-        order: {
-          createdAt: 'DESC',
-        },
-      });
-      return right(contracts.map(ContractMapper.toEntity));
-    } catch (error) {
-      return left(
-        new ContractRepositoryException(ErrorMessages.UNEXPECTED_ERROR, error),
-      );
-    }
-  }
-
   async update(
     contract: ContractEntity,
   ): AsyncResult<ContractRepositoryException, ContractEntity> {

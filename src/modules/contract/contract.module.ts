@@ -1,4 +1,5 @@
 import CoreModule from '@/core/core_module';
+import AuthModule from '@/modules/auth/auth.module';
 import IContractRepository from '@/modules/contract/adapters/i_contract_repository';
 import CreateContractService from '@/modules/contract/application/create_contract.service';
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
@@ -22,6 +23,7 @@ import { Repository } from 'typeorm';
 
 @Module({
   imports: [
+    AuthModule,
     CoreModule,
     FileModule,
     TypeOrmModule.forFeature([ContractModel, ItemModel]),
