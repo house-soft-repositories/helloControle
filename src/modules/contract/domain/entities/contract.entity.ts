@@ -209,6 +209,22 @@ export default class ContractEntity {
     this.toTouch();
   }
 
+  increaseUsedAmountInItem(
+    itemId: string,
+    amountToIncrease?: number,
+    quantityToIncrease?: number
+  ) {
+    const item = this.props.items?.find(i => i.id === itemId);
+
+    if (!item) {
+      throw new ContractDomainException(
+        `Item not found in contract: ${itemId}`,
+      );
+    }
+    item.increaseUsedAmount(amountToIncrease, quantityToIncrease);
+    this.toTouch();
+  }
+
   private toTouch() {
     this.props.updatedAt = new Date();
   }

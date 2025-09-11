@@ -104,23 +104,54 @@ export default class ItemEntity {
     return new ItemEntity(props);
   }
 
-  updateAmountUsed(newAmountUsed: number) {
-    if (newAmountUsed < 0) {
-      throw new ItemDomainException(
-        'Amount used must be greater than or equal to zero',
-      );
+  increaseUsedAmount(amountToIncrease?: number, quantityToIncrease?: number) {
+    if (this.type === ItemTypeEnum.PRODUCT) {
+      if (!quantityToIncrease || quantityToIncrease <= 0) {
+        throw new ItemDomainException('Quantity used must be not provided');
+      }
+      if (
+        this.props.quantityUsed == null ||
+        this.props.unitPrice == null ||
+        this.props.quantityTotal == null
+      ) {
+        throw new ItemDomainException(
+          `Item with id ${this.id} quantityUsed unitPrice or quantityTotal is not defined`,
+        );
+      }
+      const newQuantityUsed = this.props.quantityUsed + quantityToIncrease;
+      if (newQuantityUsed > this.props.quantityTotal!) {
+        throw new ItemDomainException(
+          `Quantity used exceeds quantity total for product item with id ${this.id}`,
+        );
+      }
+      const newAmountUsed = newQuantityUsed * this.props.unitPrice;
+
+      if (newQuantityUsed > this.props.quantityTotal) {
+        throw new ItemDomainException(
+          `Quantity used exceeds quantity total for product item with id ${this.id}`,
+        );
+      }
+      this.props.quantityUsed = newQuantityUsed;
+      this.props.amountUsed = newAmountUsed;
+      this.toTouch();
     }
-    if (this.props.totalPrice == null) {
-      throw new ItemDomainException('Total price must be defined');
+    if (this.type === ItemTypeEnum.SERVICE) {
+      if (!amountToIncrease || amountToIncrease <= 0) {
+        throw new ItemDomainException(
+          `Amount must be not provided for service item increase, item id ${this.id}`,
+        );
+      }
+      const newAmountUsed = this.props.amountUsed + amountToIncrease;
+      if (newAmountUsed > this.props.totalPrice!) {
+        throw new ItemDomainException(
+          `Amount used exceeds total price for service item with id ${this.id}`,
+        );
+      }
+      this.props.amountUsed = newAmountUsed;
+      this.toTouch();
     }
-    if (newAmountUsed > this.props.totalPrice) {
-      throw new ItemDomainException(
-        'Amount used must be less than or equal to total price',
-      );
-    }
-    this.props.amountUsed = newAmountUsed;
-    this.toTouch();
   }
+
   get id() {
     return this.props.id!;
   }
@@ -140,10 +171,16 @@ export default class ItemEntity {
     return this.props.amountUsed;
   }
   get quantityUsed() {
-    return this.props.quantityUsed || null;
+    if (this.props.quantityUsed === undefined) {
+      return null;
+    }
+    return this.props.quantityUsed;
   }
   get quantityTotal() {
-    return this.props.quantityTotal || null;
+    if (this.props.quantityTotal === undefined) {
+      return null;
+    }
+    return this.props.quantityTotal;
   }
   get type() {
     return this.props.type;

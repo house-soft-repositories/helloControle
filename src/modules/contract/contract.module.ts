@@ -5,6 +5,7 @@ import CreateContractService from '@/modules/contract/application/create_contrac
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
 import IFindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
 import GetContractsByCityService from '@/modules/contract/application/get_contracts_by_city.service';
+import IncreaseUsedAmountInItemsService from '@/modules/contract/application/increase_used_amount_in_items.service';
 import ContractController from '@/modules/contract/controllers/contract.controller';
 import ContractModel from '@/modules/contract/infra/models/contract.model';
 import ItemModel from '@/modules/contract/infra/models/item.model';
@@ -15,6 +16,7 @@ import {
   FIND_ALL_CONTRACTS_SERVICE,
   FIND_CONTRACT_BY_ID_SERVICE,
   GET_CONTRACTS_BY_CITY_SERVICE,
+  INCREASE_USED_AMOUNT_IN_ITEMS_SERVICE,
 } from '@/modules/contract/symbols';
 import IFileRepository from '@/modules/file/adapters/i_file_repository';
 import FileModule from '@/modules/file/file.module';
@@ -63,6 +65,12 @@ import { Repository } from 'typeorm';
       provide: GET_CONTRACTS_BY_CITY_SERVICE,
       useFactory: (contractRepository: IContractRepository) =>
         new GetContractsByCityService(contractRepository),
+    },
+    {
+      inject: [CONTRACT_REPOSITORY],
+      provide: INCREASE_USED_AMOUNT_IN_ITEMS_SERVICE,
+      useFactory: (contractRepository: IContractRepository) =>
+        new IncreaseUsedAmountInItemsService(contractRepository),
     },
   ],
   exports: [CONTRACT_REPOSITORY],

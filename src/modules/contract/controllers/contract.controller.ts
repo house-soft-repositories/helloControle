@@ -5,14 +5,17 @@ import FindAllContractsService from '@/modules/contract/application/find_all_con
 import IFindContractByIdService from '@/modules/contract/application/find_contract_by_id.service';
 import { contractFileUploadConfig } from '@/modules/contract/config/multer.config';
 import IGetContractByCityUseCase from '@/modules/contract/domain/usecase/i_get_contracts_by_city_use_case';
+import IIncreaseUsedAmountInItemsUseCase from '@/modules/contract/domain/usecase/i_increase_used_amount_in_items_use_case';
 import ContractDto from '@/modules/contract/dtos/contract.dto';
 import CreateContractDto from '@/modules/contract/dtos/create_contract.dto';
 import CreateContractWithFileDto from '@/modules/contract/dtos/create_contract_with_file.dto';
+import { IncreaseUsedAmountItemsDto } from '@/modules/contract/dtos/increase_used_amount_items.dto';
 import {
   CREATE_CONTRACT_SERVICE,
   FIND_ALL_CONTRACTS_SERVICE,
   FIND_CONTRACT_BY_ID_SERVICE,
   GET_CONTRACTS_BY_CITY_SERVICE,
+  INCREASE_USED_AMOUNT_IN_ITEMS_SERVICE,
 } from '@/modules/contract/symbols';
 import UserDto from '@/modules/users/dtos/user.dto';
 import {
@@ -44,6 +47,8 @@ export default class ContractController {
     private readonly findContractByIdService: IFindContractByIdService,
     @Inject(GET_CONTRACTS_BY_CITY_SERVICE)
     private readonly getContractsByCityService: IGetContractByCityUseCase,
+    @Inject(INCREASE_USED_AMOUNT_IN_ITEMS_SERVICE)
+    private readonly increaseUsedAmountService: IIncreaseUsedAmountInItemsUseCase,
   ) {}
 
   @HttpCode(201)
@@ -131,5 +136,27 @@ export default class ContractController {
     }
 
     return plainToClass(ContractDto, result.value.fromResponse());
+  }
+  @HttpCode(200)
+  @Post(':uuid/increase-used-amount')
+  async increaseUsedAmount(
+    @Param('uuid', ParseUUIDPipe) uuid: string,
+    @Body() increaseUsedAmountItemsDto: IncreaseUsedAmountItemsDto,
+  ) {
+    const result = await this.increaseUsedAmountService.execute({
+      contractUuid: uuid,
+      items: increaseUsedAmountItemsDto.items.map(item => ({
+        itemId: item.itemId,
+        amountToIncrease: item.amountToIncrease,
+        quantityToIncrease: item.quantityToIncrease,
+      })),
+    });
+    if (result.isLeft()) {
+      throw new HttpException(result.value.message, result.value.statusCode, {
+        cause: result.value.cause,
+      });
+    }
+
+    return result.value.fromResponse();
   }
 }
