@@ -8,6 +8,7 @@ export default class CreateUserDto extends PickType(UserDto, [
   'name',
   'password',
   'role',
+  'currentCityId',
 ]) {
   @Equals(UserRole.USER)
   declare role: UserRole;

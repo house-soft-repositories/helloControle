@@ -38,7 +38,13 @@ export default class CreateUserService implements ICreateUserUseCase {
         return left(userExists.value);
       }
 
-      const userEntity = UserEntity.create({ ...param });
+      const userEntity = UserEntity.create({
+        name: param.name,
+        email: param.email,
+        password: param.password,
+        role: param.role,
+        currentCityId: param.currentCityId,
+      });
 
       const encryptionPassword = await this.encryptionService.hashString(
         userEntity.password,

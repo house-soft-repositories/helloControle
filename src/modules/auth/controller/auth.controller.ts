@@ -48,6 +48,7 @@ export default class AuthController {
       createUserDto.email,
       createUserDto.password,
       createUserDto.role,
+      createUserDto.currentCityId,
     );
     const result = await this.createUserService.execute(param);
     if (result.isLeft()) {
@@ -67,6 +68,7 @@ export default class AuthController {
       createUserAdminDto.email,
       createUserAdminDto.password,
       createUserAdminDto.role,
+      null, // Admin não precisa de currentCityId
     );
     const result = await this.createUserService.execute(param);
     if (result.isLeft()) {
