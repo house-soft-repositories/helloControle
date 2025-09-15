@@ -11,6 +11,7 @@ export class CreateUserParam {
     public readonly email: string,
     public readonly password: string,
     public readonly role: UserRole,
+    public readonly currentCityId?: number | null,
   ) {}
 }
 
