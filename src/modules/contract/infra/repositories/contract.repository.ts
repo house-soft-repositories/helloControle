@@ -8,14 +8,22 @@ import ContractRepositoryException from '@/modules/contract/exceptions/contract_
 import ContractMapper from '@/modules/contract/infra/mapper/contract.mapper';
 import ContractModel from '@/modules/contract/infra/models/contract.model';
 import { ContractQueryOptions } from '@/modules/contract/infra/query/query_objects';
-import { InjectRepository } from '@nestjs/typeorm';
-import { EntityNotFoundError, FindOneOptions, Repository } from 'typeorm';
+import {
+  EntityManager,
+  EntityNotFoundError,
+  FindOneOptions,
+  Repository,
+} from 'typeorm';
 
 export default class ContractRepository implements IContractRepository {
-  constructor(
-    @InjectRepository(ContractModel)
-    private contractRepository: Repository<ContractModel>,
-  ) {}
+  private contractRepository: Repository<ContractModel>;
+  constructor(repoOrManager: Repository<ContractModel> | EntityManager) {
+    if (repoOrManager instanceof Repository) {
+      this.contractRepository = repoOrManager;
+    } else {
+      this.contractRepository = repoOrManager.getRepository(ContractModel);
+    }
+  }
   async findAllByCityId(
     cityId: number,
   ): AsyncResult<ContractRepositoryException, ContractEntity[]> {
