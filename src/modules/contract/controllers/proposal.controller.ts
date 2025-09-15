@@ -3,12 +3,15 @@ import { User } from '@/core/decorators/user_request.decorator';
 import AuthGuard from '@/core/guard/auth.guard';
 import UserRole from '@/core/types/user_role';
 import IApproveProposalUseCase from '@/modules/contract/domain/usecase/i_approve_proposal_use_case';
+import ICancelProposalUseCase from '@/modules/contract/domain/usecase/i_cancel_proposal_use_case';
 import ICreateProposalUseCase from '@/modules/contract/domain/usecase/i_create_proposal_use_case';
 import IFindProposalByFiltersUseCase from '@/modules/contract/domain/usecase/i_find_proposal_by_filters_use_case';
+import CancelProposalDto from '@/modules/contract/dtos/cancel_proposal.dto';
 import CreateProposalDto from '@/modules/contract/dtos/create_proposal.dto';
 import ProposalQueryParamsDto from '@/modules/contract/dtos/proposal_filter.dto';
 import {
   APPROVE_PROPOSAL_SERVICE,
+  CANCEL_PROPOSAL_SERVICE,
   CREATE_PROPOSAL_SERVICE,
   FIND_PROPOSAL_BY_FILTERS_SERVICE,
 } from '@/modules/contract/symbols';
@@ -22,6 +25,7 @@ import {
   HttpException,
   Inject,
   Param,
+  ParseUUIDPipe,
   Post,
   Query,
   UseGuards,
@@ -36,6 +40,8 @@ export default class ProposalController {
     private readonly approveProposalService: IApproveProposalUseCase,
     @Inject(FIND_PROPOSAL_BY_FILTERS_SERVICE)
     private readonly findProposalByFiltersService: IFindProposalByFiltersUseCase,
+    @Inject(CANCEL_PROPOSAL_SERVICE)
+    private readonly cancelProposalService: ICancelProposalUseCase,
   ) {}
 
   @Post('')
@@ -95,6 +101,28 @@ export default class ProposalController {
     const result = await this.approveProposalService.execute({
       proposalUuid,
       userApproverId: user.id,
+    });
+    if (result.isLeft()) {
+      throw new HttpException(result.value.message, result.value.statusCode, {
+        cause: result.value.cause,
+      });
+    }
+    return result.value.fromResponse();
+  }
+
+  @Post('/:proposalUuid/cancel')
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.ADMIN)
+  async cancelProposal(
+    @Param('proposalUuid', ParseUUIDPipe) proposalUuid: string,
+    @Body() cancelProposalDto: CancelProposalDto,
+    @User() user: UserDto,
+  ) {
+    const result = await this.cancelProposalService.execute({
+      proposalId: proposalUuid,
+
+      userCancelingId: user.id,
+      cancelReason: cancelProposalDto.cancelReason,
     });
     if (result.isLeft()) {
       throw new HttpException(result.value.message, result.value.statusCode, {

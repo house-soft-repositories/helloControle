@@ -5,6 +5,7 @@ import AuthModule from '@/modules/auth/auth.module';
 import IContractRepository from '@/modules/contract/adapters/i_contract_repository';
 import IProposalRepository from '@/modules/contract/adapters/i_proposal_repository';
 import ApproveProposalService from '@/modules/contract/application/approve_proposal.service';
+import CancelProposalService from '@/modules/contract/application/cancel_proposal.service';
 import CreateContractService from '@/modules/contract/application/create_contract.service';
 import CreateProposalService from '@/modules/contract/application/create_proposal.service';
 import FindAllContractsService from '@/modules/contract/application/find_all_contracts.service';
@@ -22,6 +23,7 @@ import ContractRepository from '@/modules/contract/infra/repositories/contract.r
 import ProposalRepository from '@/modules/contract/infra/repositories/proposal.repository';
 import {
   APPROVE_PROPOSAL_SERVICE,
+  CANCEL_PROPOSAL_SERVICE,
   CONTRACT_REPOSITORY,
   CREATE_CONTRACT_SERVICE,
   CREATE_PROPOSAL_SERVICE,
@@ -116,6 +118,12 @@ import { Repository } from 'typeorm';
       provide: FIND_PROPOSAL_BY_FILTERS_SERVICE,
       useFactory: (proposalRepository: IProposalRepository) =>
         new FindProposalByFiltersService(proposalRepository),
+    },
+    {
+      inject: [PROPOSAL_REPOSITORY],
+      provide: CANCEL_PROPOSAL_SERVICE,
+      useFactory: (proposalRepository: IProposalRepository) =>
+        new CancelProposalService(proposalRepository),
     },
   ],
   exports: [CONTRACT_REPOSITORY],
