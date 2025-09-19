@@ -5,6 +5,7 @@ import {
   ICityOrganRepository,
 } from '@/modules/city/adapters';
 import ICityRepository from '@/modules/city/adapters/i_city_repository';
+import CnpjValidationService from '@/modules/city/application/cnpj-validation.service';
 import CreateCityService from '@/modules/city/application/create_city.service';
 import CreateCityCompanyService from '@/modules/city/application/create_city_company.service';
 import CreateCityOrganService from '@/modules/city/application/create_city_organ.service';
@@ -28,6 +29,7 @@ import {
   CITY_COMPANY_REPOSITORY,
   CITY_ORGAN_REPOSITORY,
   CITY_REPOSITORY,
+  CNPJ_VALIDATION_SERVICE,
   CREATE_CITY_COMPANY_SERVICE,
   CREATE_CITY_ORGAN_SERVICE,
   CREATE_CITY_SERVICE,
@@ -142,6 +144,10 @@ import { Repository } from 'typeorm';
       provide: FIND_COMPANIES_BY_CITY_ID_SERVICE,
       useFactory: (cityCompanyRepository: ICityCompanyRepository) =>
         new FindCompaniesByCityIdService(cityCompanyRepository),
+    },
+    {
+      provide: CNPJ_VALIDATION_SERVICE,
+      useClass: CnpjValidationService,
     },
   ],
   exports: [
