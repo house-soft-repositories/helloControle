@@ -1,5 +1,6 @@
 import { User } from '@/core/decorators/user_request.decorator';
 import AuthGuard from '@/core/guard/auth.guard';
+import CepConsultationService from '@/modules/city/application/cep-consultation.service';
 import CnpjValidationService from '@/modules/city/application/cnpj-validation.service';
 import ICreateCityCompanyUseCase, {
   CreateCityCompanyParam,
@@ -40,6 +41,7 @@ import CreateCityOrganDto from '@/modules/city/dtos/create-city-organ.dto';
 import CreateCityDto from '@/modules/city/dtos/create_city.dto';
 import UpdateCityCompanyDto from '@/modules/city/dtos/update-city-company.dto';
 import UpdateCityOrganDto from '@/modules/city/dtos/update-city-organ.dto';
+import ViaCepResponseDto from '@/modules/city/dtos/viacep-response.dto';
 import {
   CNPJ_VALIDATION_SERVICE,
   CREATE_CITY_COMPANY_SERVICE,
@@ -100,6 +102,7 @@ export default class CityController {
     private readonly findOrgansByCityIdService: IFindOrgansByCityIdUseCase,
     @Inject(CNPJ_VALIDATION_SERVICE)
     private readonly cnpjValidationService: CnpjValidationService,
+    private readonly cepConsultationService: CepConsultationService,
   ) {}
 
   @HttpCode(201)
@@ -175,6 +178,14 @@ export default class CityController {
   @Get('company/validate-cnpj/:cnpj')
   async validateCnpj(@Param('cnpj') cnpj: string): Promise<CnpjValidationDto> {
     const result = await this.cnpjValidationService.validateCnpj(cnpj);
+    return result;
+  }
+
+  @HttpCode(200)
+  @Get('cep/:cep')
+  async consultCep(@Param('cep') cep: string): Promise<ViaCepResponseDto> {
+    console.log('Consultando CEP:', cep);
+    const result = await this.cepConsultationService.consultCep(cep);
     return result;
   }
 

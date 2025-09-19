@@ -5,6 +5,7 @@ import {
   ICityOrganRepository,
 } from '@/modules/city/adapters';
 import ICityRepository from '@/modules/city/adapters/i_city_repository';
+import CepConsultationService from '@/modules/city/application/cep-consultation.service';
 import CnpjValidationService from '@/modules/city/application/cnpj-validation.service';
 import CreateCityService from '@/modules/city/application/create_city.service';
 import CreateCityCompanyService from '@/modules/city/application/create_city_company.service';
@@ -149,6 +150,7 @@ import { Repository } from 'typeorm';
       provide: CNPJ_VALIDATION_SERVICE,
       useClass: CnpjValidationService,
     },
+    CepConsultationService,
   ],
   exports: [
     {
