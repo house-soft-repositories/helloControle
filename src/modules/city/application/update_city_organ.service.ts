@@ -29,6 +29,10 @@ export default class UpdateCityOrganService implements IUpdateCityOrganUseCase {
     const updatedOrgan = new CityOrganEntity({
       id: existingOrgan.id,
       nome: param.nome ?? existingOrgan.nome,
+      cep: param.cep ?? existingOrgan.cep,
+      logradouro: param.logradouro ?? existingOrgan.logradouro,
+      numero: param.numero ?? existingOrgan.numero,
+      bairro: param.bairro ?? existingOrgan.bairro,
       cityId: param.cityId ?? existingOrgan.cityId,
       createdAt: existingOrgan.createdAt,
       updatedAt: new Date(),

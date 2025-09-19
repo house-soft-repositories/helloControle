@@ -24,6 +24,10 @@ export default class CreateCityCompanyService
       contato: param.contato,
       uf: param.uf,
       cidade: param.cidade,
+      cep: param.cep,
+      logradouro: param.logradouro,
+      numero: param.numero,
+      bairro: param.bairro,
       cityId: param.cityId,
     });
 

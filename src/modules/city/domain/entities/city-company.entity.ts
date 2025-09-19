@@ -7,6 +7,10 @@ interface CityCompanyEntityProps {
   contato: string;
   uf: string;
   cidade: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
+  bairro: string;
   cityId: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -54,6 +58,22 @@ export default class CityCompanyEntity {
     return this.props.cidade;
   }
 
+  get cep() {
+    return this.props.cep;
+  }
+
+  get logradouro() {
+    return this.props.logradouro;
+  }
+
+  get numero() {
+    return this.props.numero;
+  }
+
+  get bairro() {
+    return this.props.bairro;
+  }
+
   get cityId() {
     return this.props.cityId;
   }
@@ -76,6 +96,10 @@ export default class CityCompanyEntity {
       contato: this.contato,
       uf: this.uf,
       cidade: this.cidade,
+      cep: this.cep,
+      logradouro: this.logradouro,
+      numero: this.numero,
+      bairro: this.bairro,
       cityId: this.cityId,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,

@@ -1,5 +1,7 @@
 import { User } from '@/core/decorators/user_request.decorator';
 import AuthGuard from '@/core/guard/auth.guard';
+import CepConsultationService from '@/modules/city/application/cep-consultation.service';
+import CnpjValidationService from '@/modules/city/application/cnpj-validation.service';
 import ICreateCityCompanyUseCase, {
   CreateCityCompanyParam,
 } from '@/modules/city/domain/usecase/i_create_city_company_use_case';
@@ -33,12 +35,15 @@ import IUpdateCityOrganUseCase, {
 import CityCompanyDto from '@/modules/city/dtos/city-company.dto';
 import CityOrganDto from '@/modules/city/dtos/city-organ.dto';
 import CityDto from '@/modules/city/dtos/city.dto';
+import CnpjValidationDto from '@/modules/city/dtos/cnpj-validation.dto';
 import CreateCityCompanyDto from '@/modules/city/dtos/create-city-company.dto';
 import CreateCityOrganDto from '@/modules/city/dtos/create-city-organ.dto';
 import CreateCityDto from '@/modules/city/dtos/create_city.dto';
 import UpdateCityCompanyDto from '@/modules/city/dtos/update-city-company.dto';
 import UpdateCityOrganDto from '@/modules/city/dtos/update-city-organ.dto';
+import ViaCepResponseDto from '@/modules/city/dtos/viacep-response.dto';
 import {
+  CNPJ_VALIDATION_SERVICE,
   CREATE_CITY_COMPANY_SERVICE,
   CREATE_CITY_ORGAN_SERVICE,
   CREATE_CITY_SERVICE,
@@ -95,6 +100,9 @@ export default class CityController {
     private readonly findCompaniesByCityIdService: IFindCompaniesByCityIdUseCase,
     @Inject(FIND_ORGANS_BY_CITY_ID_SERVICE)
     private readonly findOrgansByCityIdService: IFindOrgansByCityIdUseCase,
+    @Inject(CNPJ_VALIDATION_SERVICE)
+    private readonly cnpjValidationService: CnpjValidationService,
+    private readonly cepConsultationService: CepConsultationService,
   ) {}
 
   @HttpCode(201)
@@ -166,6 +174,21 @@ export default class CityController {
     return result.value.fromResponse();
   }
 
+  @HttpCode(200)
+  @Get('company/validate-cnpj/:cnpj')
+  async validateCnpj(@Param('cnpj') cnpj: string): Promise<CnpjValidationDto> {
+    const result = await this.cnpjValidationService.validateCnpj(cnpj);
+    return result;
+  }
+
+  @HttpCode(200)
+  @Get('cep/:cep')
+  async consultCep(@Param('cep') cep: string): Promise<ViaCepResponseDto> {
+    console.log('Consultando CEP:', cep);
+    const result = await this.cepConsultationService.consultCep(cep);
+    return result;
+  }
+
   @HttpCode(201)
   @Post('company')
   async createCompany(@Body() companyData: CreateCityCompanyDto) {
@@ -177,6 +200,10 @@ export default class CityController {
       companyData.contato,
       companyData.uf,
       companyData.cidade,
+      companyData.cep,
+      companyData.logradouro,
+      companyData.numero,
+      companyData.bairro,
       companyData.cityId,
     );
 
@@ -196,7 +223,14 @@ export default class CityController {
   @HttpCode(201)
   @Post('organ')
   async createOrgan(@Body() organData: CreateCityOrganDto) {
-    const param = new CreateCityOrganParam(organData.nome, organData.cityId);
+    const param = new CreateCityOrganParam(
+      organData.nome,
+      organData.cep,
+      organData.logradouro,
+      organData.numero,
+      organData.bairro,
+      organData.cityId,
+    );
 
     const result = await this.createCityOrganService.execute(param);
 
@@ -259,6 +293,10 @@ export default class CityController {
       companyData?.contato,
       companyData?.uf,
       companyData?.cidade,
+      companyData?.cep,
+      companyData?.logradouro,
+      companyData?.numero,
+      companyData?.bairro,
       companyData?.cityId,
     );
 
@@ -317,6 +355,10 @@ export default class CityController {
     const param = new UpdateCityOrganParam(
       id,
       organData?.nome,
+      organData?.cep,
+      organData?.logradouro,
+      organData?.numero,
+      organData?.bairro,
       organData?.cityId,
     );
 

@@ -10,6 +10,10 @@ export default abstract class CityOrganMapper extends BaseMapper<
     return new CityOrganEntity({
       id: model.id,
       nome: model.nome,
+      cep: model.cep,
+      logradouro: model.logradouro,
+      numero: model.numero,
+      bairro: model.bairro,
       cityId: model.cityId,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
@@ -20,6 +24,10 @@ export default abstract class CityOrganMapper extends BaseMapper<
     return {
       id: entity.id,
       nome: entity.nome,
+      cep: entity.cep,
+      logradouro: entity.logradouro,
+      numero: entity.numero,
+      bairro: entity.bairro,
       cityId: entity.cityId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,

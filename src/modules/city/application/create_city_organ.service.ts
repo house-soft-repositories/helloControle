@@ -16,6 +16,10 @@ export default class CreateCityOrganService implements ICreateCityOrganUseCase {
   ): AsyncResult<AppException, CreateCityOrganResponse> {
     const cityOrganEntity = new CityOrganEntity({
       nome: param.nome,
+      cep: param.cep,
+      logradouro: param.logradouro,
+      numero: param.numero,
+      bairro: param.bairro,
       cityId: param.cityId,
     });
 

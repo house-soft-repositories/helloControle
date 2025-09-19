@@ -14,6 +14,10 @@ export class UpdateCityCompanyParam {
     public readonly contato?: string,
     public readonly uf?: string,
     public readonly cidade?: string,
+    public readonly cep?: string,
+    public readonly logradouro?: string,
+    public readonly numero?: string,
+    public readonly bairro?: string,
     public readonly cityId?: number,
   ) {}
 }
