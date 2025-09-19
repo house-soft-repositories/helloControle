@@ -8,6 +8,10 @@ export class UpdateCityOrganParam {
   constructor(
     public readonly id: number,
     public readonly nome?: string,
+    public readonly cep?: string,
+    public readonly logradouro?: string,
+    public readonly numero?: string,
+    public readonly bairro?: string,
     public readonly cityId?: number,
   ) {}
 }

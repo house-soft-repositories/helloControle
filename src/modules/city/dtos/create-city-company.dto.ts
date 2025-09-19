@@ -9,5 +9,9 @@ export default class CreateCityCompanyDto extends PickType(CityCompanyDto, [
   'contato',
   'uf',
   'cidade',
+  'cep',
+  'logradouro',
+  'numero',
+  'bairro',
   'cityId',
 ]) {}

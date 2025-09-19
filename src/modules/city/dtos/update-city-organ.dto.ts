@@ -7,6 +7,22 @@ export default class UpdateCityOrganDto {
   nome?: string;
 
   @IsOptional()
+  @IsString()
+  cep?: string;
+
+  @IsOptional()
+  @IsString()
+  logradouro?: string;
+
+  @IsOptional()
+  @IsString()
+  numero?: string;
+
+  @IsOptional()
+  @IsString()
+  bairro?: string;
+
+  @IsOptional()
   @IsNumber()
   cityId?: number;
 }

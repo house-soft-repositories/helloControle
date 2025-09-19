@@ -189,6 +189,10 @@ export default class CityController {
       companyData.contato,
       companyData.uf,
       companyData.cidade,
+      companyData.cep,
+      companyData.logradouro,
+      companyData.numero,
+      companyData.bairro,
       companyData.cityId,
     );
 
@@ -208,7 +212,14 @@ export default class CityController {
   @HttpCode(201)
   @Post('organ')
   async createOrgan(@Body() organData: CreateCityOrganDto) {
-    const param = new CreateCityOrganParam(organData.nome, organData.cityId);
+    const param = new CreateCityOrganParam(
+      organData.nome,
+      organData.cep,
+      organData.logradouro,
+      organData.numero,
+      organData.bairro,
+      organData.cityId,
+    );
 
     const result = await this.createCityOrganService.execute(param);
 
@@ -271,6 +282,10 @@ export default class CityController {
       companyData?.contato,
       companyData?.uf,
       companyData?.cidade,
+      companyData?.cep,
+      companyData?.logradouro,
+      companyData?.numero,
+      companyData?.bairro,
       companyData?.cityId,
     );
 
@@ -329,6 +344,10 @@ export default class CityController {
     const param = new UpdateCityOrganParam(
       id,
       organData?.nome,
+      organData?.cep,
+      organData?.logradouro,
+      organData?.numero,
+      organData?.bairro,
       organData?.cityId,
     );
 

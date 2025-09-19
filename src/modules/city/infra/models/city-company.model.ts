@@ -70,6 +70,38 @@ export default class CityCompanyModel extends BaseModelIdNumericGenerated {
   })
   cidade: string;
 
+  @Column({
+    type: 'varchar',
+    length: 9,
+  })
+  cep: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    transformer: {
+      to: (value: string) => value.toLowerCase(),
+      from: (value: string) => FormatterString.capitalizeFirst(value),
+    },
+  })
+  logradouro: string;
+
+  @Column({
+    type: 'varchar',
+    length: 10,
+  })
+  numero: string;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+    transformer: {
+      to: (value: string) => value.toLowerCase(),
+      from: (value: string) => FormatterString.capitalizeFirst(value),
+    },
+  })
+  bairro: string;
+
   @Column({ type: 'int' })
   cityId: number;
 

@@ -7,6 +7,10 @@ export default interface ICreateCityOrganUseCase
 export class CreateCityOrganParam {
   constructor(
     public readonly nome: string,
+    public readonly cep: string,
+    public readonly logradouro: string,
+    public readonly numero: string,
+    public readonly bairro: string,
     public readonly cityId: number,
   ) {}
 }
